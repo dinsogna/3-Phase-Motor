@@ -1,6 +1,9 @@
 /*
-
-Runge Kutta 4 Method
+* Author: Dominic Insogna
+* Runge Kutta 4 Method for Simple Pendulum
+* Sources: 
+* 1. "Computational Physics: A Practical Introduction to Computational Physics and Scienctific Computing", Anagnostopoulos, 2016
+* 2. "The Runge-Kutta Family of Integrators", https://www.youtube.com/watch?v=r-jWnXjwQvk&t=651s
 */
 
 #include <iostream>
@@ -63,11 +66,13 @@ int main() {
 // x2 = x / theta_dot (velocity)
 
 // f1: theta_dot = x
+//THETA
 double f1(const double& time, const double& x1, const double& x2) {
 	return x2;
 }
 
 // f2: x_dot = (u/(m*l*l)) - (b/(m*l*l))*x - (g/l)*sin(theta)
+// THETA_DOT
 double f2(const double& time, const double& x1, const double& x2) {
 	// return -(g/l)*sin(x1);
 	return (u/(m*l*l)) - (b/(m*l*l))*x2 - (g/l)*sin(x1); 
