@@ -63,16 +63,14 @@ int main() {
 // x2 = x / theta_dot (velocity)
 
 // f1: theta_dot = x
-//THETA
 double f1(const double& time, const double& x1, const double& x2) {
 	return x2;
 }
 
 // f2: x_dot = (u/(m*l*l)) - (b/(m*l*l))*x - (g/l)*sin(theta)
-// THETA_DOT
 double f2(const double& time, const double& x1, const double& x2) {
-	return -(g/l)*sin(x1);
-	// return (u/(m*l*l)) - (b/(m*l*l))*x2 - (g/l)*sin(x1); 
+	// return -(g/l)*sin(x1);
+	return (u/(m*l*l)) - (b/(m*l*l))*x2 - (g/l)*sin(x1); 
 }
 // Loop of RKSteps over a time interval
 // time = total time interval, h = time step
