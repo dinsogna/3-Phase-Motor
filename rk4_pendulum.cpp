@@ -67,15 +67,15 @@ int main() {
 
 // f1: theta_dot = x
 //THETA
-double f1(const double& time, const double& x1, const double& x2) {
-	return x2;
+double f1(const double& time, const double& theta, const double& x) {
+	return x;
 }
 
 // f2: x_dot = (u/(m*l*l)) - (b/(m*l*l))*x - (g/l)*sin(theta)
 // THETA_DOT
-double f2(const double& time, const double& x1, const double& x2) {
+double f2(const double& time, const double& theta, const double& x) {
 	// return -(g/l)*sin(x1);
-	return (u/(m*l*l)) - (b/(m*l*l))*x2 - (g/l)*sin(x1); 
+	return (u/(m*l*l)) - (b/(m*l*l))*x - (g/l)*sin(theta); 
 }
 // Loop of RKSteps over a time interval
 // time = total time interval, h = time step
@@ -121,7 +121,7 @@ void RKSTEP(double& t, double& x1, double& x2, double& dt) {
 
 	// directly update variables
 	t = t+h;
-	x1 = x1 + (h/6.0) * (k11 + 2.0*k12 + 2.0*k13 + k14);
+	x1 = x1 + (h/6.0) * (k11 + 2.0*k12 + 2.0*k13 + k14); // Y(t+1) = Y(t) + SLOPE*dt
 	x2 = x2 + (h/6.0) * (k21 * 2.0*k22 + 2.0*k23 + k24);
 }
 
