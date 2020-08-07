@@ -14,8 +14,6 @@
 using namespace std;
 using namespace Eigen;
 
-
-
 const size_t N = 2;
 const size_t SIZE = 100000;
 array<double, SIZE> T;
@@ -24,7 +22,6 @@ size_t cnt = 1;
 typedef VectorXd state_type;
 array<state_type, SIZE> OUT;
 
-
 //Variables(gravity, length, damping factor, mass)
 double g= 9.81;
 double l= 1.00;
@@ -32,14 +29,12 @@ double b= 0.2;
 double m= 1.00;
 double u= 0.00;
 
-
 state_type pendulum(const state_type X) {
 	state_type state(N);
 	state(0) = X(1); // state(0) => dtheta = x
 	state(1) = (u)/(m*l*l) - (b*X(1))/(m*l*l) -(g/l)*sin(X(0)); // state(1) => ddtheta = -(g/l)*sin(theta)
 	return state;
 }
-
 
 state_type euler_step(state_type state, double dt) {
     
@@ -69,7 +64,6 @@ void printOutput() {
         cout<< T[i] <<"        "<< state(0) <<"         "<< state(1) <<endl;
     }
 }
-
 
 int main() {
 	state_type v(N);

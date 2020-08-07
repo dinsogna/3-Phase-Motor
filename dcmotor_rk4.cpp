@@ -24,17 +24,15 @@ size_t cnt = 1;
 typedef VectorXd state_type;
 array<state_type, SIZE> OUT;
 
-
-
 // DC Motor Vars
 double R = 1.00;   // Resistance
 double L = 1.00;   // Inductance 
-double K = 1.00;   // Motor Constant
-double B = 1.00;   // Damping Factor
-double J = 1.00;   // Intertia
+double K= 1.00;    // Motor Constant
+double B = 0.00;   // Damping Factor
+double J = 1.00;   // Inertia
 
-double Td = 1.00; // External Load Torque
-double Vm = 1.00; // Voltage to Motor
+double Td = 2.00; // External Load Torque
+double Vm = 5.00; // Voltage to Motor
 
 /* NOTES
 input: Voltage to Motors armature:
@@ -62,12 +60,10 @@ state_type dcmotor(const double t, const state_type X) {
     MatrixXd C(2,1);
     C << Td, Vm;
 
-
     state = A*X + B*C;
 	
 	return state;
 }
-
 
 state_type rk4_step(double t, state_type state, double dt) {
     
@@ -113,7 +109,7 @@ void printOutput() {
 int main() {
 	state_type init(N);
 	init << 1,1; // Initial conditions: dtheta, i
-	cout << init << endl;
+	// cout << init << endl;
 	rk4(init, 0, 10, .01);
 	printOutput();
 }
