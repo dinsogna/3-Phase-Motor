@@ -1,6 +1,10 @@
 // g++ -I /Users/dinsogna/Documents/RoMeLa/eigen epend.cpp -o epend
 // plot "<./epend" using 1:2 with lines
 
+/*
+* Author: Dominic Insogna
+* Damped Driven Pendulum Model: Explicit Euler
+*/
 
 #include <iostream>
 #include <Eigen/Dense>
@@ -29,7 +33,7 @@ double m= 1.00;
 double u= 0.00;
 
 
-state_type f(const state_type X) {
+state_type pendulum(const state_type X) {
 	state_type state(N);
 	state(0) = X(1); // state(0) => dtheta = x
 	state(1) = (u)/(m*l*l) - (b*X(1))/(m*l*l) -(g/l)*sin(X(0)); // state(1) => ddtheta = -(g/l)*sin(theta)
@@ -39,8 +43,7 @@ state_type f(const state_type X) {
 
 state_type euler_step(state_type state, double dt) {
     
-	
-	return state + dt*f(state);
+	return state + dt*pendulum(state);
 }
 
 void euler(state_type init, double start, double end, double dt) {

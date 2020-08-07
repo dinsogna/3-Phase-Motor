@@ -1,6 +1,11 @@
 // g++ -I /Users/dinsogna/Documents/RoMeLa/eigen ependrk4.cpp -o ependrk4
 // plot "<./epend" using 1:2 with lines
 
+/*
+* Author: Dominic Insogna
+* Damped Driven Pendulum Model: RK4
+*/
+
 
 #include <iostream>
 #include <Eigen/Dense>
