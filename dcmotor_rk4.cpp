@@ -12,10 +12,6 @@
 #include <cmath>
 #include <array>
 
-// using namespace std;
-// using namespace Eigen;
-
-
 const size_t N = 2;
 const size_t SIZE = 100000;
 std::array<double, SIZE> T;
@@ -49,7 +45,7 @@ Using Newton's 2nd Law and Kirchoff's Voltage law, we get the following equation
 */
 
 state_type dcmotor(const double t, const state_type X) {
-    state_type state(N);
+	state_type state(N);
 
     Eigen::MatrixXd A(2,2);
     A << (-B/J), (K/J), (-K/L), (-R/L);
@@ -62,7 +58,7 @@ state_type dcmotor(const double t, const state_type X) {
 
     state = A*X + B*C;
 	
-    return state;
+	return state;
 }
 
 state_type rk4_step(double t, state_type state, double dt) {
@@ -76,7 +72,8 @@ state_type rk4_step(double t, state_type state, double dt) {
     state_type k3 = dcmotor(t + h2, state + h2*k1);
     state_type k4 = dcmotor(t + h, state + h*k3);
 	
-    return state + h6*(k1 + 2.0*(k2 + k3) + k4);
+
+	return state + h6*(k1 + 2.0*(k2 + k3) + k4);
 }
 
 void rk4(state_type init, double start, double end, double dt) {
@@ -93,10 +90,10 @@ void rk4(state_type init, double start, double end, double dt) {
  }
 
 void printOutput() {
-    std::cout.setf(std::ios::fixed);
+	std::cout.setf(std::ios::fixed);
     std::cout.precision(17);
 
-    std::cout<<"Time     dTheta     i"<<std::endl;
+	std::cout<<"Time     dTheta     i"<<std::endl;
     for(int i=0; i<cnt; i++){
         state_type state = OUT[i];
         std::cout<< T[i] <<"        "<< state(0) <<"         "<< state(1) <<std::endl;
@@ -108,7 +105,6 @@ void printOutput() {
 int main() {
 	state_type init(N);
 	init << 1,1; // Initial conditions: dtheta, i
-	// cout << init << endl;
 	rk4(init, 0, 10, .01);
 	printOutput();
 }
