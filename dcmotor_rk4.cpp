@@ -12,17 +12,17 @@
 #include <cmath>
 #include <array>
 
-using namespace std;
-using namespace Eigen;
+// using namespace std;
+// using namespace Eigen;
 
 
 const size_t N = 2;
 const size_t SIZE = 100000;
-array<double, SIZE> T;
+std::array<double, SIZE> T;
 size_t cnt = 1;
 
-typedef VectorXd state_type;
-array<state_type, SIZE> OUT;
+typedef Eigen::VectorXd state_type;
+std::array<state_type, SIZE> OUT;
 
 // DC Motor Vars
 double R = 1.00;   // Resistance
@@ -49,20 +49,20 @@ Using Newton's 2nd Law and Kirchoff's Voltage law, we get the following equation
 */
 
 state_type dcmotor(const double t, const state_type X) {
-	state_type state(N);
+    state_type state(N);
 
-    MatrixXd A(2,2);
+    Eigen::MatrixXd A(2,2);
     A << (-B/J), (K/J), (-K/L), (-R/L);
 
-    MatrixXd B(2,2);
+    Eigen::MatrixXd B(2,2);
     B << (-1/J), 0, 0, (1/L);
     
-    MatrixXd C(2,1);
+    Eigen::MatrixXd C(2,1);
     C << Td, Vm;
 
     state = A*X + B*C;
 	
-	return state;
+    return state;
 }
 
 state_type rk4_step(double t, state_type state, double dt) {
@@ -76,8 +76,7 @@ state_type rk4_step(double t, state_type state, double dt) {
     state_type k3 = dcmotor(t + h2, state + h2*k1);
     state_type k4 = dcmotor(t + h, state + h*k3);
 	
-
-	return state + h6*(k1 + 2.0*(k2 + k3) + k4);
+    return state + h6*(k1 + 2.0*(k2 + k3) + k4);
 }
 
 void rk4(state_type init, double start, double end, double dt) {
@@ -94,15 +93,15 @@ void rk4(state_type init, double start, double end, double dt) {
  }
 
 void printOutput() {
-	cout.setf(ios::fixed);
-    cout.precision(17);
+    std::cout.setf(std::ios::fixed);
+    std::cout.precision(17);
 
-	cout<<"Time     dTheta     i"<<endl;
+    std::cout<<"Time     dTheta     i"<<std::endl;
     for(int i=0; i<cnt; i++){
         state_type state = OUT[i];
-        cout<< T[i] <<"        "<< state(0) <<"         "<< state(1) <<endl;
+        std::cout<< T[i] <<"        "<< state(0) <<"         "<< state(1) <<std::endl;
     }
-    cout << "Finish RK4 DC Motor" << endl;
+    std::cout << "Finish RK4 DC Motor" << std::endl;
 }
 
 
