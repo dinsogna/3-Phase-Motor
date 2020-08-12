@@ -12,17 +12,13 @@
 #include <cmath>
 #include <array>
 
-using namespace std;
-using namespace Eigen;
-
-
 const size_t N = 2;
 const size_t SIZE = 100000;
-array<double, SIZE> T;
+std::array<double, SIZE> T;
 size_t cnt = 1;
 
-typedef VectorXd state_type;
-array<state_type, SIZE> OUT;
+typedef Eigen::VectorXd state_type;
+std::array<state_type, SIZE> OUT;
 
 
 //Variables(gravity, length, damping factor, mass)
@@ -70,26 +66,21 @@ void rk4(state_type init, double start, double end, double dt) {
  }
 
 void printOutput() {
-	cout.setf(ios::fixed);
-    cout.precision(17);
+	std::cout.setf(std::ios::fixed);
+    std::cout.precision(17);
 
-	cout<<"Time     Theta     Thetadot"<<endl;
+	std::cout<<"Time     Theta     Thetadot"<<std::endl;
     for(int i=0; i<cnt; i++){
         state_type state = OUT[i];
-        cout<< T[i] <<"        "<< state(0) <<"         "<< state(1) <<endl;
+        std::cout<< T[i] <<"        "<< state(0) <<"         "<< state(1) <<std::endl;
     }
-    cout << "Finish RK4 Pendulum" << endl;
+    std::cout << "Finish RK4 Pendulum" << std::endl;
 }
 
 
 int main() {
-	state_type v(N);
-	v << 1, 2;
-	cout << v << endl;
-
 	state_type init(N);
 	init << 1,0; // Initial conditions: theta, dtheta
-	cout << init << endl;
 	rk4(init, 0, 10, .01);
 	printOutput();
 }
