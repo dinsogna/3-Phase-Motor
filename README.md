@@ -9,15 +9,15 @@ Notes
 -	Authors / Email address
 -	Github Markup / Latex? For math
 
-Description\
+**Description**\
 C++ model of a three-phase (PMSM) DC motor connected to a simple physical pendulum using the Runge-Kutta 4 integration method
 
-Setup and Dependencies
+**Setup and Dependencies**\
 •	You must install the Eigen 3 C++ library and include in your build path to run this model
 •	Download: http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
 •	Tutorial: http://eigen.tuxfamily.org/dox/GettingStarted.html
 
-Pendulum Equations
+**Pendulum Equations**\
 Motion of the pendulum is modeled using the 2nd order ODE: 
 
 (m*l*l)*ddtheta = u – b*dtheta – (m*g*l)*sin(theta)
@@ -36,7 +36,7 @@ We can rewrite this 2nd order ODE as a system of two 1st order ODEs as such:
 dtheta = x
 d[x]/dt = u / (m*l*l) – b*dtheta / (m*l*l) – (g/l)*sin(theta)
 
-PMSM Equations
+**PMSM Equations**\
 The PMSM can be modeled using a system of 2nd Order ODEs representing the mechanical and electrical dynamics of the motor:
 
 J*ddtheta = -B*dtheta +K*i_q - T_d
@@ -59,7 +59,7 @@ Where we define:
 
 For our model, we ignore the coupling terms, and also ignore the id…[TBD]
 
-Source File Descriptions / 
+**Source File Description / Map**\
 -	Pendulum.cpp
 Simple Pendulum[TBD]
 
@@ -72,9 +72,15 @@ Couples the pendulum to the motor. [TBD]
 -	Main.cpp
 [TBD]
 
-Running the Model
+**Running the Model**\
 [TBD]
 
-Testing
+**Accuracy of RK4 vs ODEINT**\
+
+**Static Testing**\
 [TBD]
+
+**PID Controller**\
+
+**Dynamic Testing**\
 
