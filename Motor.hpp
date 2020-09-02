@@ -33,6 +33,7 @@ public:
     }
     
     virtual state_type rk4_step(state_type state, double dt, double &tor){
+        
         double h = dt;
         double h2 = 0.5*h;
         double h6 = h/6.0;
@@ -44,8 +45,9 @@ public:
         
         double a=(k1(1) + 2.0*(k2(1) + k3(1)) + k4(1))/6;
         state_type newState= state+h6*(k1 + 2.0*(k2 + k3) + k4);
-        tor= (J*a) + (B*newState(0)) - (K*newState(1));
+        tor= (-J*a) - (B*newState(0)) + (K*newState(1));
         return newState;
+        
     }
 };
 
