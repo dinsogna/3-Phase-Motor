@@ -37,6 +37,7 @@ public:
         tor=(a*m*l*l)+(g*m*l*sin(newState(0)))+(b*newState(1));
 
         return newState;
+        
     }
     
 };

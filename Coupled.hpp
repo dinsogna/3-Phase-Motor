@@ -31,7 +31,8 @@ public:
             next_motor<<pend.getState(j+1)(1), mot.getState(j)(1);
             mot.addState(mot.rk4_step(next_motor, dt, torque));
             next_pend<<pend.getState(j+1)(0), mot.getState(j+1)(0);
-        }
+        } 
+        
     }
     
     void printOutput() {
