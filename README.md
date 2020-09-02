@@ -1,5 +1,4 @@
-#H1 README
-Three Phase Motor Model
+# Three-Phase Motor & Pendulum System in C++
 
 Notes
 -	C++ version
