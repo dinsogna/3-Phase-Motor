@@ -9,7 +9,7 @@ Notes
 -	Authors / Email address
 -	Github Markup / Latex? For math
 
-Description
+Description/
 C++ model of a three-phase (PMSM) DC motor connected to a simple physical pendulum using the Runge-Kutta 4 integration method
 
 Setup and Dependencies
