@@ -12,7 +12,8 @@ Notes
 C++ model of a three-phase (PMSM) DC motor connected to a simple physical pendulum using the Runge-Kutta 4 integration method
 
 **Setup and Dependencies**\
-•	You must install the Eigen 3 C++ library and include in your build path to run this model
+•	C++ Version: 11
+- You must install the Eigen 3 C++ library and include in your build path to run this model
 •	Download: http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
 •	Tutorial: http://eigen.tuxfamily.org/dox/GettingStarted.html
 
@@ -74,12 +75,13 @@ Couples the pendulum to the motor. [TBD]
 **Running the Model**\
 [TBD]
 
-**Accuracy of RK4 vs ODEINT**\
+**Custom RK4 vs ODEINT**\
 
 **Static Testing**\
 [TBD]
 
 **PID Controller**\
+
 
 **Dynamic Testing**\
 
