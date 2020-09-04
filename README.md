@@ -11,7 +11,7 @@ Notes
 **Description**\
 C++ model of a three-phase (PMSM) DC motor connected to a simple physical pendulum using the Runge-Kutta 4 integration method
 
-**Setup and Dependencies**\
+**Setup and Dependencies**
 - C++ Version: 11
 - External Libraries: Eigen 3
   - You must install the Eigen 3 C++ library and include in your build path to run this model
@@ -21,7 +21,7 @@ C++ model of a three-phase (PMSM) DC motor connected to a simple physical pendul
 **Pendulum Equations**\
 Motion of the pendulum is modeled using the 2nd order ODE: 
 
-(m*l*l)*ddtheta = u – b*dtheta – (m*g*l)*sin(theta)
+![Pend1](https://latex.codecogs.com/gif.latex?ml%5E2%20%5Cddot%5Ctheta%20%3D%20u%20-%20b%5Cdot%5Ctheta%20-mgl%5Csin%5Ctheta)
 
 Where we define:
 •	theta: angular position in radians
@@ -34,31 +34,33 @@ Where we define:
 
 We can rewrite this 2nd order ODE as a system of two 1st order ODEs as such:
 
-dtheta = x
-d[x]/dt = u / (m*l*l) – b*dtheta / (m*l*l) – (g/l)*sin(theta)
+![Pend2](https://latex.codecogs.com/gif.latex?%5Cdot%5Ctheta%20%3D%20x) \newline
+![Pend3](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bdx%7D%7Bdt%7D%20%3D%20%5Cfrac%7Bu%7D%7Bml%5E2%7D%20-%20%5Cfrac%7Bb%5Cdot%5Ctheta%7D%7Bml%5E2%7D%20-%20%5Cfrac%7Bg%7D%7Bl%7D%5Csin%5Ctheta)
 
 **PMSM Equations**\
-The PMSM can be modeled using a system of 2nd Order ODEs representing the mechanical and electrical dynamics of the motor:
+The PMSM can be modeled using a system of 2nd Order ODEs representing the mechanical and electrical properties of the motor:
 
-J*ddtheta = -B*dtheta +K*i_q - T_d
-L*d[i_q]/dt = -R*i_q – K*dtheta + V_q – L*dtheta* i_d
-L*d[i_d]/dt = -R*i_d – K*dtheta + V_d – L*dtheta* i_q
-
+![Mot1](https://latex.codecogs.com/gif.latex?J%5Cddot%5Ctheta%20%3D%20-B%5Cdot%5Ctheta%20&plus;%20Ki_q%20-%20T_d) \newline
+![Mot2](https://latex.codecogs.com/gif.latex?L%5Cfrac%7Bdi_q%7D%7Bdt%7D%20%3D%20-Ri_q%20-%20K%5Cdot%5Ctheta%20&plus;%20V_q%20-%20L%5Cdot%5Ctheta%20i_d) \newline
+![Mot3](https://latex.codecogs.com/gif.latex?L%5Cfrac%7Bdi_d%7D%7Bdt%7D%20%3D%20-Ri_d%20&plus;%20V_d&plus;-%20L%5Cdot%5Ctheta%20i_q) \newline
 
 Where we define:
-•	theta: angular position in radians
-•	dtheta: first time derivative of theta
-•	ddtheta: second time derivative of theta
-•	J: Inertia
-•	L: Inductance
-•	T_d: external torque
-•	B: damping constant
-•	R: Electrical Resistance
-•	K: Motor constant
-•	i_q: quadrature current
-•	i_d: 
+- theta: angular position in radians
+- dtheta: first time derivative of theta
+- ddtheta: second time derivative of theta
+- J: Inertia
+- L: Inductance
+- T_d: external torque
+- B: damping constant
+- R: Electrical Resistance
+- K: Motor constant
+- i_q: quadrature current
+- i_d: 
 
 For our model, we ignore the coupling terms, and also ignore the id…[TBD]
+
+**State Space System**\
+
 
 **Source File Description / Map**\
 -	Pendulum.cpp
