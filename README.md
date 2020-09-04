@@ -12,10 +12,11 @@ Notes
 C++ model of a three-phase (PMSM) DC motor connected to a simple physical pendulum using the Runge-Kutta 4 integration method
 
 **Setup and Dependencies**\
-•	C++ Version: 11
-- You must install the Eigen 3 C++ library and include in your build path to run this model
-•	Download: http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
-•	Tutorial: http://eigen.tuxfamily.org/dox/GettingStarted.html
+- C++ Version: 11
+- External Libraries: Eigen 3
+  - You must install the Eigen 3 C++ library and include in your build path to run this model
+  - Download: http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
+  - Tutorial: http://eigen.tuxfamily.org/dox/GettingStarted.html
 
 **Pendulum Equations**\
 Motion of the pendulum is modeled using the 2nd order ODE: 
