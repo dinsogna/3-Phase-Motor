@@ -1,11 +1,9 @@
 # Three-Phase Motor & Pendulum System in C++
 
 \*To Do:
--	C++ version
 -	Graphs – control loops, dynamics equations – how they are connected, 
--	 Maybe illustration of the code structure
+-	illustration of the code structure
 -	How to run test codes / comparisons / basic tests
--	Authors / Email address
 -	Github Markup / Latex? For math
 \*
 
@@ -67,13 +65,36 @@ Where we define:
 For our model, we ignore the coupling terms, and also ignore the id…[TBD]
 
 **State Space System**\
-We convert our systems of equations into state space form in order to discrete integrate using the Runge-Kutta method.
+We convert our systems of equations into state space form in order to discretely integrate using the Runge-Kutta method.
 
-Pendulum:
+Pendulum:\
+Conditions:\
+```c++
+double g= 9.81;
+double l= 1.00;
+double b= 0.2;
+double m= 1.00;
+double u= 3.00;
+.
+.
+.
+int main() {
+	state_type init(N);
+	init << 1,0; // Initial conditions: theta, dtheta
+	rk4(init, 0, 10, .01);
+	printOutput();
+}
+```
+
 ![SSPend](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bd%7D%7Bdt%7D%20%5Cbegin%7Bbmatrix%7D%20%5Ctheta%20%5C%5C%20x%20%5Cend%7Bbmatrix%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%20x%20%5C%5C%20%5Cfrac%7Bu%7D%7Bml%5E2%7D%20-%20%5Cfrac%7Bb%5Cdot%5Ctheta%7D%7Bml%5E2%7D%20-%20%5Cfrac%7Bg%7D%7Bl%7D%5Csin%5Ctheta%20%5Cend%7Bbmatrix%7D)
 
-Motor:
+Motor:\
 ![SSMot](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bd%7D%7Bdt%7D%20%5Cbegin%7Bbmatrix%7D%20%5Cdot%5Ctheta%20%5C%5C%20i%20%5Cend%7Bbmatrix%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%20%5Cfrac%7B-B%7D%7BJ%7D%20%26%20%5Cfrac%7BK%7D%7BJ%7D%5C%5C%20%5Cfrac%7B-K%7D%7BL%7D%20%26%20%5Cfrac%7B-R%7D%7BJ%7D%20%5Cend%7Bbmatrix%7D%20%5Cbegin%7Bbmatrix%7D%20%5Cdot%5Ctheta%20%5C%5C%20i%20%5Cend%7Bbmatrix%7D%20&plus;%20%5Cbegin%7Bbmatrix%7D%20%5Cfrac%7B-1%7D%7BJ%7D%20%26%200%5C%5C%200%20%26%20%5Cfrac%7B-1%7D%7BJ%7D%20%5Cend%7Bbmatrix%7D%20%5Cbegin%7Bbmatrix%7D%20T_d%5C%5C%20V_m%20%5Cend%7Bbmatrix%7D)
+
+**The Runge-Kutta 4 Method**\
+Pendulum:\
+![ependrk4]
+
 
 **Source File Description / Map**\
 -	Pendulum.cpp
@@ -94,7 +115,20 @@ Couples the pendulum to the motor. [TBD]
 **Custom RK4 vs ODEINT**\
 
 **Static Testing**\
-In a static state, such that 
+In a static state, such that angular acceleration and velocity are zero, our motor can be represented by:\
+![Stat1](https://latex.codecogs.com/gif.latex?Ki_q%20%3D%20T_d) \
+![Stat2](https://latex.codecogs.com/gif.latex?V_m%20%3D%20Ri_q)
+
+Coupling the motor to the pendulum, we get:\
+![Stat3](https://latex.codecogs.com/gif.latex?Ki_q%20%3D%20mgl%5Csin%5Ctheta) \
+![Stat2](https://latex.codecogs.com/gif.latex?V_m%20%3D%20Ri_q)
+
+
+
+
+
+
+
 
 **PID Controller**\
 
