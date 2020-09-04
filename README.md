@@ -73,8 +73,8 @@ Motor:\
 ![SSMot](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bd%7D%7Bdt%7D%20%5Cbegin%7Bbmatrix%7D%20%5Cdot%5Ctheta%20%5C%5C%20i%20%5Cend%7Bbmatrix%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%20%5Cfrac%7B-B%7D%7BJ%7D%20%26%20%5Cfrac%7BK%7D%7BJ%7D%5C%5C%20%5Cfrac%7B-K%7D%7BL%7D%20%26%20%5Cfrac%7B-R%7D%7BJ%7D%20%5Cend%7Bbmatrix%7D%20%5Cbegin%7Bbmatrix%7D%20%5Cdot%5Ctheta%20%5C%5C%20i%20%5Cend%7Bbmatrix%7D%20&plus;%20%5Cbegin%7Bbmatrix%7D%20%5Cfrac%7B-1%7D%7BJ%7D%20%26%200%5C%5C%200%20%26%20%5Cfrac%7B-1%7D%7BJ%7D%20%5Cend%7Bbmatrix%7D%20%5Cbegin%7Bbmatrix%7D%20T_d%5C%5C%20V_m%20%5Cend%7Bbmatrix%7D)
 
 **The Runge-Kutta 4 Method**\
-Pendulum:\
-Conditions:\
+Pendulum Example:\
+Initial Conditions:
 ```c++
 double g= 9.81;
 double l= 1.00;
@@ -91,8 +91,32 @@ int main() {
 	printOutput();
 }
 ```
-Output:\
-![ependrk4]()
+Output:
+![ependrk4](https://github.com/dinsogna/3-Phase-Motor/blob/master/images/epend4k4.png)
+
+DC Motor Example:\
+Initial Conditions
+```c++
+double R = 1.00;   // Resistance
+double L = 1.00;   // Inductance 
+double K= 1.00;    // Motor Constant
+double B = 0.00;   // Damping Factor
+double J = 1.00;   // Inertia
+
+double Td = 2.00; // External Load Torque
+double Vm = 5.00; // Voltage to Motor
+.
+.
+.
+int main() {
+	state_type init(N);
+	init << 1,1; // Initial conditions: dtheta, i
+	rk4(init, 0, 10, .01);
+	printOutput();
+}
+```
+
+![dcmotor_rk4](https://github.com/dinsogna/3-Phase-Motor/blob/master/images/dcmotor_rk4.png)
 
 
 **Source File Description / Map**\
