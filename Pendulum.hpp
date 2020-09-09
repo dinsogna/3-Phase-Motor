@@ -34,8 +34,8 @@ public:
         
         double a=(k1(1) + 2.0*(k2(1) + k3(1)) + k4(1))/6;
         state_type newState= state+h6*(k1 + 2.0*(k2 + k3) + k4);
-        tor=(a*m*l*l)+(g*m*l*sin(newState(0)))+(b*newState(1));
-
+        tor=((a*m*l*l)+(g*m*l*sin(newState(0)))+(b*newState(1))); //test
+        //newState(1)*=10; //test
         return newState;
         
     }

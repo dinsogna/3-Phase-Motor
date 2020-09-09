@@ -12,9 +12,9 @@
 class Controller{
 public:
     Controller(double tar){
-        Kp=100;
-        Ki=30;
-        Kd=100;
+        Kp=50;
+        Ki=0;
+        Kd=0;
         target=tar;
         proportional=0;
         integral=0;

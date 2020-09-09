@@ -16,6 +16,11 @@ public:
     Motor(double init1, double init2):System(init1, init2){}
     
     virtual state_type calculate(const state_type X, const double tor){
+        if(Vm>Vmax)
+            Vm=Vmax;
+        else if(Vm<0-Vmax)
+            Vm=0-Vmax;
+        
         state_type state(N);
 
         Eigen::MatrixXd A(2,2);
@@ -34,6 +39,8 @@ public:
     
     virtual state_type rk4_step(state_type state, double dt, double &tor){
         
+        tor/=10;
+        state(0)*=10;
         double h = dt;
         double h2 = 0.5*h;
         double h6 = h/6.0;
@@ -45,7 +52,8 @@ public:
         
         double a=(k1(1) + 2.0*(k2(1) + k3(1)) + k4(1))/6;
         state_type newState= state+h6*(k1 + 2.0*(k2 + k3) + k4);
-        tor= (-J*a) - (B*newState(0)) + (K*newState(1));
+        tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10; //test
+        newState(0)/=10;
         return newState;
         
     }
