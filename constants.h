@@ -17,7 +17,7 @@ const size_t N = 2;
 
 
 //TIME SETTINGS
-double t=30;
+double t=4;
 double dt=0.0001;
 
 //PENDULUM SETTINGS
@@ -35,7 +35,7 @@ const double L = 0.00018;      // Inductance***
 const double K= 0.088;       // Motor Constant
 const double B = 0.001;      // Damping Factor
 const double J = 0.0001;      // Inertia
-double Vm = .2;    // Voltage to Motor
+double Vm = 0.3;    // Voltage to Motor
 double i= 0;
 double torque=0;
 
@@ -43,6 +43,6 @@ double torque=0;
 
 //Target theta
 
-double targetTheta=2.5;
+double targetTheta=6;
 
 #endif /* constants_h */

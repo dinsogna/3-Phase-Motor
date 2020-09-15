@@ -52,7 +52,7 @@ public:
         
         double a=(k1(1) + 2.0*(k2(1) + k3(1)) + k4(1))/6;
         state_type newState= state+h6*(k1 + 2.0*(k2 + k3) + k4);
-        tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10; //test
+        tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10;
         newState(0)/=10;
         return newState;
         

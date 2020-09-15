@@ -9,11 +9,13 @@
 #ifndef Controller_hpp
 #define Controller_hpp
 
+#include <cmath>
+
 class Controller{
 public:
     Controller(double tar){
-        Kp=50;
-        Ki=0;
+        Kp=100;
+        Ki=1;
         Kd=0;
         target=tar;
         proportional=0;
@@ -22,7 +24,8 @@ public:
         error=0;
     }
     
-    double newVoltage(double theta, double dt){
+    double newVoltage(double theta, double dt, double t){
+        //target=sin(3.14*0.5*t);
         double newError=target-theta;
         proportional=Kp*newError;
         integral+=Ki*((newError+error)/2)*dt;
