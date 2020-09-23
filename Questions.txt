@@ -1,1 +1,12 @@
 Questions for Tim
+- Torque Saturation
+    - Mathematically Solve? We would need to know prooperties of motor
+    - Tanh() function?
+    - Or other? Regression?
+- How does current drive the motor? Should we use this for torque controller? 
+    - this was also mentioned in video: current vs torque graph (saturation)
+- Do our assumption make sense?
+- Back EMF?
+- Max current? 
+- Max voltage?
+- 
