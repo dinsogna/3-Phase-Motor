@@ -1,8 +1,8 @@
 //
 //  Controller.hpp
-//  CoupledObject
+//  MotorModel
 //
-//  Created by Andrew Chen on 9/1/20.
+//  Created by Andrew Chen on 9/24/20.
 //  Copyright © 2020 Andrew Chen. All rights reserved.
 //
 
@@ -13,19 +13,19 @@
 
 class Controller{
 public:
-    Controller(double tar){
+    Controller(){
         Kp=100;
         Ki=1;
         Kd=0;
-        target=tar;
         proportional=0;
         integral=0;
         derivative=0;
         error=0;
     }
     
-    double newVoltage(double theta, double dt, double t){
-        //target=sin(3.14*0.5*t);
+    double newVoltage(double theta, double tar, double dt, double t){
+        //target=sin(3.14*14*t);
+        target=tar;
         double newError=target-theta;
         proportional=Kp*newError;
         integral+=Ki*((newError+error)/2)*dt;
@@ -33,6 +33,8 @@ public:
         error=newError;
         return proportional+integral+derivative;
     }
+    
+    
     
 private:
     double Kp;
@@ -44,5 +46,4 @@ private:
     double target;
     double error;
 };
-
 #endif /* Controller_hpp */
