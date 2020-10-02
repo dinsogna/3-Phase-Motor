@@ -1,6 +1,6 @@
 Questions for Tim
 - Torque Saturation
-    - Mathematically Solve? We would need to know prooperties of motor
+    - Mathematically Solve? We would need to know properties of motor
     - Tanh() function?
     - Or other? Regression?
 - How does current drive the motor? Should we use this for torque controller? 
@@ -9,4 +9,5 @@ Questions for Tim
 - Back EMF?
 - Max current? 
 - Max voltage?
-- 
+- do we factor id?
+- How do we model block diagram? Controller includes Motor and Pend? Or just Motor?
