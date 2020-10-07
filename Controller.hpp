@@ -13,37 +13,29 @@
 
 class Controller{
 public:
-    Controller(){
-        Kp=100;
-        Ki=1;
-        Kd=0;
-        proportional=0;
-        integral=0;
-        derivative=0;
-        error=0;
-    }
+    Controller(double theta_dot, double time);
     
-    double newVoltage(double theta, double tar, double dt, double t){
-        //target=sin(3.14*14*t);
-        target=tar;
-        double newError=target-theta;
-        proportional=Kp*newError;
-        integral+=Ki*((newError+error)/2)*dt;
-        derivative=Kd*(newError-error)/dt;
-        error=newError;
-        return proportional+integral+derivative;
-    }
+    //INPUT: Current  OUTPUT: Voltage
+    double foc_block(double cur, double tar);
+    //INPUT: Velocity  OUTPUT: Current
+    double velocity_block(double vel, double tar);
+    //INPUT: Position  OUTPUT: Current
+    double pos_block(double pos, double tar);
     
     
+    double torque_control(double cur, double tar);
+    double velocity_control(double vel, double cur, double target_vel);
+    double direct_control(double pos, double cur, double target_pos);
     
 private:
-    double Kp;
-    double Ki;
-    double Kd;
-    double proportional;
-    double integral;
-    double derivative;
-    double target;
-    double error;
+    double t;
+    double dt;
+    double foc_error;
+    double foc_integral;
+    double vel_error;
+    double vel_integral;
+    double pos_error;
+    double pos_integral;
+    
 };
 #endif /* Controller_hpp */

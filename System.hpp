@@ -62,6 +62,7 @@ public:
     virtual state_type calculate(const state_type X, const double tor);
     virtual state_type rk4_step(state_type state, double dt, double &tor);
     void change_volt(double v);
+    double get_target_curr(double target_tor, int index);
     
 private:
     double Vmax;
@@ -72,7 +73,7 @@ private:
     double J;
     double Vm;
     double Iq;
-    
+    std::vector<double> reference;
 };
 
 

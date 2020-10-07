@@ -90,13 +90,14 @@ Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt
     B= 0.001;
     J= 0.0001;
     Vm= voltage;
+    reference.push_back(B*theta_dot);
 }
 
 state_type Motor::calculate(const state_type X, const double tor){
-    if(Vm>Vmax)
+    /*if(Vm>Vmax)
         Vm=Vmax;
     else if(Vm<0-Vmax)
-        Vm=0-Vmax;
+        Vm=0-Vmax;*/
     
     state_type state(N);
 
@@ -129,10 +130,14 @@ state_type Motor::rk4_step(state_type state, double dt, double &tor){
     
     double a=(k1(1) + 2.0*(k2(1) + k3(1)) + k4(1))/6;
     state_type newState= state+h6*(k1 + 2.0*(k2 + k3) + k4);
-    tor= ((-J*a) - (B*newState(0)) + (3.5*tanh(K*newState(1)/35)))*10;
+    tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10;
+    reference.push_back((J*a)+(B*newState(0)));
     newState(0)/=10;
     return newState;
-    
+}
+
+double Motor::get_target_curr(double target_tor, int index){
+    return (reference[index]+(target_tor/10))/K;
 }
 
 void Motor::change_volt(double v) {Vm=v;}
