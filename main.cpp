@@ -12,18 +12,18 @@
 
 int main() {
     double theta=0;
-    double target_theta=1;
+    double target=0.2;
     double theta_dot=0;
-    double iq=10;
-    double voltage=0.16;
-    double torque=0.8798;
-    double time=4;
+    double iq=0;
+    double voltage=0;
+    double torque=0;
+    double time=50;
     double dt=0.0001;
     
-    //Coupled x(theta, theta_dot, iq, voltage, torque, target_theta, time, dt);
-    //x.printOutput();
-    
-    Motor x(theta_dot, iq, voltage, time, dt);
-    x.rk4_full(torque);
+    Coupled x(theta, theta_dot, iq, voltage, torque, target, time, dt);
     x.printOutput();
+    
+    //Motor x(theta_dot, iq, voltage, time, dt);
+    //x.rk4_full(torque);
+    //x.printOutput();
 }

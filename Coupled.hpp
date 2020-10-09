@@ -23,6 +23,7 @@ private:
     Controller cont;
     std::vector<double> T;
     double torque;
+    std::vector<double> motor_torque;
 };
 
 #endif /* Coupled_hpp */
