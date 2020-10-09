@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <Eigen/Dense>
+#include "Controller.hpp"
 
 typedef Eigen::VectorXd state_type;
 
@@ -27,8 +28,10 @@ public:
     void addState(state_type x);
     state_type getState(int x);
     int getSize();
-    void rk4_full(double torque);
-    void printOutput();
+    virtual void rk4_full(double torque, double target);
+    virtual void printOutput();
+    double getTime(int i);
+    int getTimeSize();
 private:
     std::vector<state_type> values;
     std::vector<double> T;
@@ -63,7 +66,8 @@ public:
     virtual state_type rk4_step(state_type state, double dt, double &tor);
     void change_volt(double v);
     double get_target_curr(double target_tor, int index);
-    
+    virtual void rk4_full(double torque, double target);
+    virtual void printOutput();
 private:
     double Vmax;
     double R;
@@ -73,7 +77,10 @@ private:
     double J;
     double Vm;
     double Iq;
+    Controller cont;
     std::vector<double> reference;
+    std::vector<double> torque_list;
+    double external_torque;
 };
 
 
