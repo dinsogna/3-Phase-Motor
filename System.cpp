@@ -9,6 +9,7 @@
 #include "System.hpp"
 #include <iostream>
 #include <cmath>
+#include "Controller.hpp"
 
 //=========================================================================================
 //SYSTEM FUNCTIONS
@@ -26,12 +27,19 @@ void System::addState(state_type x){values.push_back(x);}
 state_type System::getState(int x) {return values[x];}
 int System::getSize() {return values.size();}
 
-void System::rk4_full(double torque){
+void System::rk4_full(double torque, double target){
     for(int i=0; i<T.size(); i++){
         addState(rk4_step(getState(i), T[1], torque));
     }
 }
 
+double System::getTime(int i){
+    return T[i];
+}
+
+int System::getTimeSize(){
+    return T.size();
+}
 
 
 void System::printOutput(){
@@ -82,12 +90,12 @@ state_type Pendulum::rk4_step(state_type state, double dt, double &tor){
 //=========================================================================================
 //MOTOR FUNCTIONS
 //=========================================================================================
-Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt):System(theta_dot, Iq, time, dt){
+Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt):System(theta_dot, Iq, time, dt), cont(dt, time){
     Vmax= 30;
     R= 0.16;
     L= 0.00018;
     K= 0.088;
-    B= 0.001;
+    B= .001;
     J= 0.0001;
     Vm= voltage;
     reference.push_back(B*theta_dot);
@@ -117,6 +125,8 @@ state_type Motor::calculate(const state_type X, const double tor){
 
 state_type Motor::rk4_step(state_type state, double dt, double &tor){
     
+  
+    
     tor/=10;
     state(0)*=10;
     double h = dt;
@@ -141,3 +151,23 @@ double Motor::get_target_curr(double target_tor, int index){
 }
 
 void Motor::change_volt(double v) {Vm=v;}
+
+void Motor::rk4_full(double torque, double target){
+    external_torque=torque;
+    torque_list.push_back(0);
+    for(int i=0; i<getTimeSize(); i++){
+        //Vm=cont.foc_block(getState(i)(1), get_target_curr(target,i));
+        double input_torque=external_torque;
+        addState(rk4_step(getState(i), getTime(1), input_torque));
+        torque_list.push_back(input_torque-external_torque);
+    }
+}
+
+void Motor::printOutput(){
+    std::cout.setf(std::ios::fixed);
+    std::cout.precision(5);
+    std::cout<<"Time         First         Second"<<std::endl;
+    for(int i=0; i<getTimeSize(); i++)
+        std::cout<<getTime(i)<<"         "<<getState(i)(0)<<"         "<<getState(i)(1)<<"         "<<torque_list[i]<<std::endl;
+    std::cout << "Finished System" << std::endl;
+}
