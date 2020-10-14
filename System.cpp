@@ -101,7 +101,9 @@ Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt
     reference.push_back(B*theta_dot);
 }
 
-state_type Motor::calculate(const state_type X, const double tor){
+// state_type Motor::calculate(const state_type X, const double tor){
+state_type Motor::calculate(const state_type X, const double tor) {
+
     /*if(Vm>Vmax)
         Vm=Vmax;
     else if(Vm<0-Vmax)
@@ -110,25 +112,33 @@ state_type Motor::calculate(const state_type X, const double tor){
     state_type state(N);
 
     Eigen::MatrixXd A(2,2);
-    A << (-B/J), (K/J), (-K/L), (-R/L);
+    A << (-B/J), (K/J), (-K/L), (-R/L); 
 
     Eigen::MatrixXd B(2,2);
+    // B << (-1/J), 0, 0, (1/L);
     B << (-1/J), 0, 0, (1/L);
     
     Eigen::MatrixXd C(2,1);
-    C << tor, Vm;
+    C << tor, Vm; // torque is passed from rk4step (external torque Td)
 
     state = A*X + B*C;
     
-    return state;
+    return state; // state = {thetadot, iq}
 }
 
 state_type Motor::rk4_step(state_type state, double dt, double &tor){
     
-  
+    /*
+    J*a = -B*(thetdot) + K*iq - Td //SUM OF TORQUES = I*alpha
     
-    tor/=10;
-    state(0)*=10;
+    J = I*alpha
+    electrical torque: K*iq
+
+    Sum(Torque) = I*alpha
+    */
+
+    tor/=10; // torque / 10
+    state(0)*=10; // thetadot
     double h = dt;
     double h2 = 0.5*h;
     double h6 = h/6.0;
@@ -138,11 +148,22 @@ state_type Motor::rk4_step(state_type state, double dt, double &tor){
     state_type k3 = calculate(state + h2*k1, tor);
     state_type k4 = calculate(state + h*k3, tor);
     
-    double a=(k1(1) + 2.0*(k2(1) + k3(1)) + k4(1))/6;
-    state_type newState= state+h6*(k1 + 2.0*(k2 + k3) + k4);
-    tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10;
-    reference.push_back((J*a)+(B*newState(0)));
-    newState(0)/=10;
+    //Shouldn't this be k(0)***
+    // double a=(k1(1) + 2.0*(k2(1) + k3(1)) + k4(1))/6; // get acceleration for torque calc, using old state
+    state_type newState = state + h6*(k1 + 2.0*(k2 + k3) + k4);
+    
+    ////
+    //What is going on here?
+    double a=(k1(0) + 2.0*(k2(0) + k3(0)) + k4(0))/6; //acceleration
+    // tor = torque to feed into pendulum
+    tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10; //recalculate torque NEW Td (overall torque?)
+    //
+    torque_list.push_back(K*newState(1)*10); // NEW CODE
+    //
+    reference.push_back((J*a)+(B*newState(0))); // solving for new iq (new state (1))
+    ///
+
+    newState(0)/=10; // divide theta dot again by 10
     return newState;
 }
 
@@ -154,12 +175,13 @@ void Motor::change_volt(double v) {Vm=v;}
 
 void Motor::rk4_full(double torque, double target){
     external_torque=torque;
-    torque_list.push_back(0);
+    // torque_list.push_back(0);
     for(int i=0; i<getTimeSize(); i++){
         //Vm=cont.foc_block(getState(i)(1), get_target_curr(target,i));
         double input_torque=external_torque;
         addState(rk4_step(getState(i), getTime(1), input_torque));
-        torque_list.push_back(input_torque-external_torque);
+        // torque_list.push_back(input_torque);
+
     }
 }
 
