@@ -25,7 +25,7 @@ Coupled::Coupled(double theta, double theta_dot, double Iq, double Vm, double to
         next_motor<<pend.getState(j+1)(1), mot.getState(j)(1);
         
         //TORQUE CONTROL
-        mot.change_volt(cont.foc_block(mot.getState(j)(1), mot.get_target_curr(tar,j)));
+        //mot.change_volt(cont.foc_block(mot.getState(j)(1), mot.get_target_curr(tar,j)));
         //VELOCITY CONTROL
         //mot.change_volt(cont.velocity_control(pend.getState(j+1)(1), mot.getState(j)(1), tar));
         //DIRECT CONTROL
@@ -33,7 +33,7 @@ Coupled::Coupled(double theta, double theta_dot, double Iq, double Vm, double to
         //SIN TEST
         //mot.change_volt(cont.direct_control(pend.getState(j+1)(0), mot.getState(j)(1), 0.5*sin(3.14*4*T[j])));
         
-        mot.addState(mot.rk4_step(next_motor, dt, torque));
+        mot.addState(mot.controlled_rk4_step(next_motor, dt, torque, tar));
         motor_torque.push_back(torque);
         next_pend<<pend.getState(j+1)(0), mot.getState(j+1)(0);
     }

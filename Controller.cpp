@@ -21,9 +21,9 @@ Controller::Controller(double theta_dot, double time){
 
 //INPUT: Current  OUTPUT: Voltage
 double Controller::foc_block(double cur, double tar){
-    double Kp=.00;
-    double Ki=.000;
-    double Kd=0;
+    double Kp=1; //0.01
+    double Ki=0; //40
+    double Kd=.00;
     double newError=tar-cur;
     double proportional=Kp*newError;
     foc_integral+=Ki*((newError+foc_error)/2)*dt;
@@ -48,9 +48,9 @@ double Controller::velocity_block(double vel, double tar){
 
 //INPUT: Position  OUTPUT: Current
 double Controller::pos_block(double pos, double tar){
-    double Kp=150;
-    double Ki=20;
-    double Kd=0;
+    double Kp=0.01; //150;
+    double Ki= 0.00002;   //20;
+    double Kd=0;   //100;
     double newError=tar-pos;
     double proportional=Kp*newError;
     pos_integral+=Ki*((newError+pos_error)/2)*dt;
@@ -59,7 +59,7 @@ double Controller::pos_block(double pos, double tar){
     return proportional+pos_integral+derivative;
 }
 
-double Controller::torque_control(double cur, double tar){
+double Controller::current_control(double cur, double tar){
     return foc_block(cur, tar);
 }
 

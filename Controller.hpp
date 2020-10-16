@@ -23,7 +23,7 @@ public:
     double pos_block(double pos, double tar);
     
     
-    double torque_control(double cur, double tar);
+    double current_control(double cur, double tar);
     double velocity_control(double vel, double cur, double target_vel);
     double direct_control(double pos, double cur, double target_pos);
     
