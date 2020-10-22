@@ -48,8 +48,8 @@ double Controller::velocity_block(double vel, double tar){
 
 //INPUT: Position  OUTPUT: Current
 double Controller::pos_block(double pos, double tar){
-    double Kp=0.01; //150;
-    double Ki= 0.00002;   //20;
+    double Kp=150;
+    double Ki= 20;
     double Kd=0;   //100;
     double newError=tar-pos;
     double proportional=Kp*newError;

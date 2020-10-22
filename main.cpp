@@ -15,15 +15,15 @@ int main() {
     double target=0;
     double theta_dot=0;
     double iq=0;
-    double voltage=10;
+    double voltage=0.1;
     double torque=0;
     double time=10;
     double dt=0.0001;
     
     Coupled x(theta, theta_dot, iq, voltage, torque, target, time, dt);
-    //x.printOutput();
+    x.printOutput();
     
-  //  Motor x(theta_dot, iq, voltage, time, dt);
+    //Motor x(theta_dot, iq, voltage, time, dt);
     //x.rk4_full(torque, target);
-   // x.printOutput();
+    //x.printOutput();
 }

@@ -100,7 +100,6 @@ Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt
     J= 0.0001;
     Vm= voltage;
     relative_theta=0;
-    reference.push_back(B*theta_dot);
 }
 
 state_type Motor::calculate(const state_type X, const double tor){
@@ -140,38 +139,33 @@ state_type Motor::rk4_step(state_type state, double dt, double &tor){
     state_type k3 = calculate(state + h2*k1, tor);
     state_type k4 = calculate(state + h*k3, tor);
     
-    double a=(k1(0) + (2.0*(k2(0) + k3(0))) + k4(0))/(6);
-    double a_iq=(k1(1) + (2.0*(k2(1) + k3(1))) + k4(1))/6;
-    //std::cout<<a<<std::endl;
+    double a=(k1(0) + (2.0*(k2(0) + k3(0))) + k4(0))/(60);
     
     state_type newState= state+(h6*(k1 + (2.0*(k2 + k3)) + k4));
     tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10;
-    reference.push_back((J*a)+(B*newState(0)));
-    torque_list.push_back(K*newState(1)*10);
     newState(0)/=10;
     relative_theta+=(newState(0)*dt);
-    std::cout<<a<<"     "<<a_iq<<"     "<<(newState(0)-state(0))/dt<<std::endl;
     return newState;
 }
 
 state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, double target){
+    //CURRENT CONTROLLER
     //Vm=cont.current_control(state(1), target);
+    
+    //DIRECT POSITION CONTROLLER
     //Vm=cont.direct_control(relative_theta, state(1), target);
-    //std::cout<<Vm<<std::endl;
+    
     return rk4_step(state, dt, tor);
 }
 
-double Motor::get_target_curr(double target_tor, int index){
-    return (reference[index]+(target_tor/10))/K;
-}
 
-void Motor::change_volt(double v) {Vm=v;}
 
 void Motor::rk4_full(double torque, double target){
     torque_list.push_back(0);
     for(int i=0; i<getTimeSize(); i++){
         double input_torque=torque;
         addState(controlled_rk4_step(getState(i), getTime(1), input_torque, target));
+        //torque_list.push_back(input_torque-torque);
     }
 }
 

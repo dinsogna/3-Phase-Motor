@@ -66,8 +66,6 @@ public:
     
     virtual state_type calculate(const state_type X, const double tor);
     virtual state_type rk4_step(state_type state, double dt, double &tor);
-    void change_volt(double v);
-    double get_target_curr(double target_tor, int index);
     virtual void rk4_full(double torque, double target);
     virtual void printOutput();
     state_type controlled_rk4_step(state_type state, double dt, double &tor, double target);
@@ -81,7 +79,6 @@ private:
     double Vm;
     double Iq;
     Controller cont;
-    std::vector<double> reference;
     std::vector<double> torque_list;
     double relative_theta;
 };
