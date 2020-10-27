@@ -14,7 +14,8 @@
 
 class Coupled{
 public:
-    Coupled(double theta, double theta_dot, double Iq, double Vm, double tor, double tar, double time, double dt);
+    Coupled(double theta, double theta_dot, double Iq, double Vm, double tor, double tar, double t, double step, int cont);
+    void run();
     void printOutput();
     
 private:
@@ -24,6 +25,11 @@ private:
     std::vector<double> T;
     double torque;
     std::vector<double> motor_torque;
+
+    double time;
+    double dt;
+    int cont_select;
+    double target;
 };
 
 #endif /* Coupled_hpp */
