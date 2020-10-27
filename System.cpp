@@ -100,6 +100,7 @@ Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt
     J= 0.0001;
     Vm= voltage;
     relative_theta=0;
+    gear_ratio = 10; //NEW
 }
 
 state_type Motor::calculate(const state_type X, const double tor){
@@ -126,10 +127,9 @@ state_type Motor::calculate(const state_type X, const double tor){
 
 state_type Motor::rk4_step(state_type state, double dt, double &tor){
     
-    
-    
-    tor/=10;
-    state(0)*=10;
+    // std::cout <<"rk4step motor" << std::endl; // TEST ONLY
+    tor/=gear_ratio;
+    state(0)*=gear_ratio;
     double h = dt;
     double h2 = 0.5*h;
     double h6 = h/6.0;
@@ -139,32 +139,50 @@ state_type Motor::rk4_step(state_type state, double dt, double &tor){
     state_type k3 = calculate(state + h2*k1, tor);
     state_type k4 = calculate(state + h*k3, tor);
     
-    double a=(k1(0) + (2.0*(k2(0) + k3(0))) + k4(0))/(60);
+    double a=(k1(0) + (2.0*(k2(0) + k3(0))) + k4(0))/(6*gear_ratio);
     
-    state_type newState= state+(h6*(k1 + (2.0*(k2 + k3)) + k4));
-    tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*10;
-    newState(0)/=10;
-    relative_theta+=(newState(0)*dt);
+    state_type newState = state+(h6*(k1 + (2.0*(k2 + k3)) + k4));
+    tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
+    newState(0)/= gear_ratio;
+    relative_theta += (newState(0)*dt);
     return newState;
 }
 
-state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, double target){
-    //CURRENT CONTROLLER
-    //Vm=cont.current_control(state(1), target);
+state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, double target, int cont_select){
     
-    //DIRECT POSITION CONTROLLER
-    //Vm=cont.direct_control(relative_theta, state(1), target);
+	switch(cont_select) {
+		case 1: //CURRENT CONTROLLER
+			// std::cout << "current control" << std::endl; //TEST ONLY
+    		Vm=cont.current_control(state(1), target);
+			break;
+		case 2: //DIRECT POSITION CONTROLLER
+    		// std::cout << "direct position control" << std::endl; //TEST ONLY
+    		Vm=cont.direct_control(relative_theta, state(1), target);
+			break;
+		case 3: //VELOCITY CONTROLLER
+			// std::cout << "velocity control" << std::endl; //TEST ONLY
+			Vm = cont.velocity_control(state(0), state(1), target);
+			break;
+		default:
+			// std::cout << "default control" << std::endl; //TEST ONLY
+			break;
+
+	}
+
+    
+    
+    
     
     return rk4_step(state, dt, tor);
 }
 
 
-
-void Motor::rk4_full(double torque, double target){
+//Just for Motor testing
+void Motor::rk4_full(double torque, double target, int cont_select){
     torque_list.push_back(0);
     for(int i=0; i<getTimeSize(); i++){
         double input_torque=torque;
-        addState(controlled_rk4_step(getState(i), getTime(1), input_torque, target));
+        addState(controlled_rk4_step(getState(i), getTime(1), input_torque, target, cont_select));
         //torque_list.push_back(input_torque-torque);
     }
 }

@@ -36,7 +36,7 @@ public:
     
 private:
     std::vector<state_type> values;
-    std::vector<double> T;
+    std::vector<double> T; // for motor only testing
 };
 
 //=========================================================================================
@@ -66,9 +66,9 @@ public:
     
     virtual state_type calculate(const state_type X, const double tor);
     virtual state_type rk4_step(state_type state, double dt, double &tor);
-    virtual void rk4_full(double torque, double target);
+    virtual void rk4_full(double torque, double target, int cont_select);
     virtual void printOutput();
-    state_type controlled_rk4_step(state_type state, double dt, double &tor, double target);
+    state_type controlled_rk4_step(state_type state, double dt, double &tor, double target, int cont_select);
 private:
     double Vmax;
     double R;
@@ -78,6 +78,7 @@ private:
     double J;
     double Vm;
     double Iq;
+    double gear_ratio; // NEW
     Controller cont;
     std::vector<double> torque_list;
     double relative_theta;
