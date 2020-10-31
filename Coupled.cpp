@@ -56,30 +56,40 @@ void Coupled::run() {
 	    motor_torque.push_back(torque); //log torque
 	    next_pend<<pend.getState(j+1)(0), mot.getState(j+1)(0);
 
-	    // LOOK INTO THIS
-     //    for(int k =0; k<4; k++) {
-            
-	    //     next_motor<<pend.getState(j+1)(1), mot.getState(j)(1); //Update current motor state with Pendulum's new velocity, current motor iq current, and udpated torque
-	        
-	    //     mot.addState(mot.controlled_rk4_step(next_motor, dt, torque, target, cont_select)); //execute 1 RK4 for Motor, update "values" vector (Motor object) with new thetadot, iq
-	        
-	    //     motor_torque.push_back(torque); //log torque
-	        
-	    //     next_pend<<pend.getState(j+1)(0), mot.getState(j+1)(0);
-     //    }
-
     }
 }
     
 
-void Coupled::printOutput() {
+void Coupled::printConsole() {
     std::cout.setf(std::ios::fixed);
     std::cout.precision(5);
     std::cout<<"               PENDULUM                         MOTOR "<<std::endl;
     std::cout<<"Time           theta           thetadot         thetadot         current         "<<std::endl;
+
     for(int a=0; a<T.size(); a++){
-        std::cout<< T[a] <<"        "<< pend.getState(a)(0) <<"         "<< pend.getState(a)(1)<<"         "<<mot.getState(a)(0)<<"         "<<mot.getState(a)(1)<<"         "<<motor_torque[a]<<"         "<<0.5*sin(3.14*30*T[a])<<std::endl; 
+        std::cout<< T[a] <<"        "<< pend.getState(a)(0) <<"         "<< pend.getState(a)(1)<<"         "<<mot.getState(a)(0)<<"         "<<mot.getState(a)(1)<<"         "<<motor_torque[a]<<"         "<<0.5*sin(3.14*4*T[a])<<std::endl;        
+        
     }
     std::cout << "Finish RK4 COUPLED" << std::endl;
+    
+}
+
+void Coupled::printFile(std::string fileName) {
+    
+    std::ofstream myfile;
+    myfile.open(fileName);
+
+    std::cout.setf(std::ios::fixed);
+    std::cout.precision(5);
+    
+    myfile <<"Time,Pendulum Theta,Pendulum Thetadot,Motor Thetadot,Motor Current" << std::endl;
+
+    for(int a=0; a<T.size(); a++){
+        myfile << T[a] << "," << pend.getState(a)(0) << "," << pend.getState(a)(1) << "," <<mot.getState(a)(0) << "," <<mot.getState(a)(1) << std::endl;
+
+        
+    }
+    myfile.close();
+    std::cout << "Results printed to " << fileName << std::endl;
     
 }
