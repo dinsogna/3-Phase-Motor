@@ -68,7 +68,7 @@ public:
     virtual state_type rk4_step(state_type state, double dt, double &tor);
     virtual void rk4_full(double torque, double target, int cont_select);
     virtual void printOutput();
-    state_type controlled_rk4_step(state_type state, double dt, double &tor, double target, int cont_select);
+    state_type controlled_rk4_step(state_type state, double dt, double &tor, double target, int cont_select, int reference);
 private:
     double Vmax;
     double R;

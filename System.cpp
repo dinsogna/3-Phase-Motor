@@ -104,10 +104,10 @@ Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt
 }
 
 state_type Motor::calculate(const state_type X, const double tor){
-    /*if(Vm>Vmax)
+    if(Vm>Vmax)
         Vm=Vmax;
     else if(Vm<0-Vmax)
-        Vm=0-Vmax;*/
+        Vm=0-Vmax;
     
     state_type state(N);
 
@@ -148,30 +148,30 @@ state_type Motor::rk4_step(state_type state, double dt, double &tor){
     return newState;
 }
 
-state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, double target, int cont_select){
+state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, double target, int cont_select, int reference){
     
 	switch(cont_select) {
 		case 1: //CURRENT CONTROLLER
 			// std::cout << "current control" << std::endl; //TEST ONLY
-    		Vm=cont.current_control(state(1), target);
+    		Vm=Vmax*cont.current_control(state(1), target);
 			break;
 		case 2: //DIRECT POSITION CONTROLLER
     		// std::cout << "direct position control" << std::endl; //TEST ONLY
-    		Vm=cont.direct_control(relative_theta, state(1), target);
+    		Vm=Vmax*cont.direct_control(relative_theta, state(1), target, reference);
 			break;
 		case 3: //VELOCITY CONTROLLER
 			// std::cout << "velocity control" << std::endl; //TEST ONLY
-			Vm = cont.velocity_control(state(0), state(1), target);
+			Vm = Vmax*cont.velocity_control(state(0), state(1), target);
 			break;
+        case 4: //SIN TEST
+            Vm=Vmax*cont.direct_control(relative_theta, state(1), 0.5*sin(3.14*30*reference*dt), reference);
+            break;
 		default:
 			// std::cout << "default control" << std::endl; //TEST ONLY
 			break;
 
 	}
 
-    
-    
-    
     
     return rk4_step(state, dt, tor);
 }
@@ -182,7 +182,7 @@ void Motor::rk4_full(double torque, double target, int cont_select){
     torque_list.push_back(0);
     for(int i=0; i<getTimeSize(); i++){
         double input_torque=torque;
-        addState(controlled_rk4_step(getState(i), getTime(1), input_torque, target, cont_select));
+        addState(controlled_rk4_step(getState(i), getTime(1), input_torque, target, cont_select, i+1));
         //torque_list.push_back(input_torque-torque);
     }
 }

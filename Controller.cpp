@@ -7,6 +7,7 @@
 //
 
 #include "Controller.hpp"
+#include <iostream>
 
 Controller::Controller(double theta_dot, double time){
     dt=theta_dot;
@@ -17,16 +18,17 @@ Controller::Controller(double theta_dot, double time){
     vel_integral=0;
     pos_error=0;
     pos_integral=0;
+    tar_cur=0;
 }
 
 //INPUT: Current  OUTPUT: Voltage
 double Controller::foc_block(double cur, double tar){
-    double Kp=1; //0.01
-    double Ki=0; //40
-    double Kd=.00;
+    double Kp=0.05; //0.01
+    double Ki=0.005; //40
+    double Kd=0;
     double newError=tar-cur;
     double proportional=Kp*newError;
-    foc_integral+=Ki*((newError+foc_error)/2)*dt;
+    foc_integral+=Ki*(newError)*dt;
     double derivative=Kd*(newError-foc_error)/dt;
     foc_error=newError;
     return proportional+foc_integral+derivative;
@@ -35,12 +37,12 @@ double Controller::foc_block(double cur, double tar){
 
 //INPUT: Velocity  OUTPUT: Current
 double Controller::velocity_block(double vel, double tar){
-    double Kp=5;
+    double Kp=100;
     double Ki=0.1;
     double Kd=0.000;
     double newError=tar-vel;
     double proportional=Kp*newError;
-    vel_integral+=Ki*((newError+vel_error)/2)*dt;
+    vel_integral+=Ki*(newError)*dt;
     double derivative=Kd*(newError-vel_error)/dt;
     vel_error=newError;
     return proportional+vel_integral+derivative;
@@ -48,12 +50,12 @@ double Controller::velocity_block(double vel, double tar){
 
 //INPUT: Position  OUTPUT: Current
 double Controller::pos_block(double pos, double tar){
-    double Kp=150;
+    double Kp=250;
     double Ki= 20;
-    double Kd=0;   //100;
+    double Kd=5;   //100;
     double newError=tar-pos;
     double proportional=Kp*newError;
-    pos_integral+=Ki*((newError+pos_error)/2)*dt;
+    pos_integral+=Ki*(newError)*dt;
     double derivative=Kd*(newError-pos_error)/dt;
     pos_error=newError;
     return proportional+pos_integral+derivative;
@@ -67,6 +69,12 @@ double Controller::velocity_control(double vel, double cur, double target_vel){
     return foc_block(cur, velocity_block(vel, target_vel));
 }
 
-double Controller::direct_control(double pos, double cur, double target_pos){
-    return foc_block(cur, pos_block(pos, target_pos));
+double Controller::direct_control(double pos, double cur, double target_pos, int reference){
+    
+    if(reference%5==0){
+        tar_cur=pos_block(pos, target_pos);
+    }
+    //std::cout<<tar_cur<<std::endl;
+    return foc_block(cur, tar_cur);
+    
 }

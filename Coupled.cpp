@@ -52,7 +52,7 @@ void Coupled::run() {
         T.push_back(T[j]+dt); //add next time step to T vector (Coupled object)
         pend.addState(pend.rk4_step(next_pend, dt, torque)); //execute 1 RK4 for Pendulum, update "values" vector (Pendlum object) with new theta, thetadot; update torque
         next_motor<<pend.getState(j+1)(1), mot.getState(j)(1); //Update current motor state with Pendulum's new velocity, current motor iq current, and udpated torque
-	    mot.addState(mot.controlled_rk4_step(next_motor, dt, torque, target, cont_select)); //execute 1 RK4 for Motor, update "values" vector (Motor object) with new thetadot, iq
+	    mot.addState(mot.controlled_rk4_step(next_motor, dt, torque, target, cont_select, j+1)); //execute 1 RK4 for Motor, update "values" vector (Motor object) with new thetadot, iq
 	    motor_torque.push_back(torque); //log torque
 	    next_pend<<pend.getState(j+1)(0), mot.getState(j+1)(0);
 
@@ -78,7 +78,7 @@ void Coupled::printOutput() {
     std::cout<<"               PENDULUM                         MOTOR "<<std::endl;
     std::cout<<"Time           theta           thetadot         thetadot         current         "<<std::endl;
     for(int a=0; a<T.size(); a++){
-        std::cout<< T[a] <<"        "<< pend.getState(a)(0) <<"         "<< pend.getState(a)(1)<<"         "<<mot.getState(a)(0)<<"         "<<mot.getState(a)(1)<<"         "<<motor_torque[a]<<"         "<<0.5*sin(3.14*4*T[a])<<std::endl; 
+        std::cout<< T[a] <<"        "<< pend.getState(a)(0) <<"         "<< pend.getState(a)(1)<<"         "<<mot.getState(a)(0)<<"         "<<mot.getState(a)(1)<<"         "<<motor_torque[a]<<"         "<<0.5*sin(3.14*30*T[a])<<std::endl; 
     }
     std::cout << "Finish RK4 COUPLED" << std::endl;
     

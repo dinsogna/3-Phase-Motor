@@ -16,20 +16,20 @@ int main() {
     double theta=0;      //initial theta (radians)
     double theta_dot=0;  //initial theta dot (radians/s)
     double iq=0;         //initial iq (amps)
-    double voltage=0.1;  //initial voltage to motor Vm (volts)
+    double voltage=0;  //initial voltage to motor Vm (volts)
     double torque=0;     //initial external torque (N*m)
     double time=1;      //total time interval (seconds)
-    double dt=0.0001;       //size of one time step
+    double dt=0.00001;       //size of one time step
 
     /*CONTROLLER SELECT
 	* 0: No Controller
 	* 1: Current Controller
-	* 2: Velocity Controller
-	* 3: Direct Torque Controller
+	* 2: Direct Position Controller
+	* 3: Velocity Controller
 	*/
 
-    int cont_select = 0;
-    double target=0;     //target for controller (torque, thetadot, or current)
+    int cont_select = 2;
+    double target=0.1;     //target for controller (torque, thetadot, or current)
 
 
     // //test

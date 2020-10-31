@@ -25,7 +25,7 @@ public:
     
     double current_control(double cur, double tar);
     double velocity_control(double vel, double cur, double target_vel);
-    double direct_control(double pos, double cur, double target_pos);
+    double direct_control(double pos, double cur, double target_pos, int reference);
     
 private:
     double t;
@@ -36,6 +36,6 @@ private:
     double vel_integral;
     double pos_error;
     double pos_integral;
-    
+    double tar_cur;
 };
 #endif /* Controller_hpp */
