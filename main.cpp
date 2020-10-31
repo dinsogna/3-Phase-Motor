@@ -1,10 +1,6 @@
-//
+
 //  main.cpp
-//  MotorModel
-//
-//  Created by Andrew Chen on 9/24/20.
-//  Copyright © 2020 Andrew Chen. All rights reserved.
-//
+
 
 #include <iostream>
 #include "System.hpp"
@@ -32,19 +28,9 @@ int main() {
     double target=0.1;     //target for controller (torque, thetadot, or current)
 
 
-    // //test
-    // int gearrat = 10;
-    // int test = 1000;
-
-    // test /= gearrat;
-    // std::cout << test << std::endl;
-    // exit(0);
-
     Coupled x(theta, theta_dot, iq, voltage, torque, target, time, dt, cont_select);
     x.run();
-    x.printOutput();
-    
-    //Motor x(theta_dot, iq, voltage, time, dt);
-    //x.rk4_full(torque, target, cont_select);
-    //x.printOutput();
+    x.printConsole();
+    x.printFile("output.csv");
+
 }
