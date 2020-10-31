@@ -16,7 +16,8 @@ class Coupled{
 public:
     Coupled(double theta, double theta_dot, double Iq, double Vm, double tor, double tar, double t, double step, int cont);
     void run();
-    void printOutput();
+    void printConsole();
+    void printFile(std::string fileName);
     
 private:
     Pendulum pend;
