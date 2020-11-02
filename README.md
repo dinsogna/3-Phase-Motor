@@ -73,7 +73,7 @@ Coupling the motor to the pendulum, we get:\
 ![Stat3](https://latex.codecogs.com/gif.latex?Ki_q%20%3D%20mgl%5Csin%5Ctheta) \
 ![Stat2](https://latex.codecogs.com/gif.latex?V_m%20%3D%20Ri_q)
 
-Example: 
+Example: initial theta = .3 radians, Vm = .7801V 
 
 ![Static-Test](https://lh6.googleusercontent.com/ZMCoguS-I42E5v7VdwFqnhNZE3gaBBjj15Srw1bcaTWSiESxxZ5J8ha40FUHNz3Gu-4VFmib2MBRyVJiSZqYu2Bt4q4Jh_cOJngOf9Q)
 
