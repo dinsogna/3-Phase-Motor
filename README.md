@@ -1,4 +1,4 @@
-# Three-Phase Motor & Pendulum System Model in C++
+# DC Motor & Pendulum System Model in C++
 
 ## Authors
 - Andrew Chen: achen2001@g.ucla.edu
