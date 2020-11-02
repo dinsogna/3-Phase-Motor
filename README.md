@@ -16,7 +16,7 @@ C++ model of a three-phase (PMSM) brushless DC motor connected to a simple physi
   - Download: http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
   - Tutorial: http://eigen.tuxfamily.org/dox/GettingStarted.html
 
-## Pendulum Equations
+## Pendulum Equation
 Motion of the pendulum is modeled using the 2nd order ODE: 
 
 ![Pend1](https://latex.codecogs.com/gif.latex?ml%5E2%20%5Cddot%5Ctheta%20%3D%20u%20-%20b%5Cdot%5Ctheta%20-mgl%5Csin%5Ctheta)
@@ -30,27 +30,16 @@ Where we define:
 •	m: mass of pendulum
 •	l: length of pendulum
 
-## PMSM Equations
+## Motor Equation
 The PMSM can be modeled using a system of 2nd Order ODEs representing the mechanical and electrical properties of the motor:
 
 ![Mot1](https://latex.codecogs.com/gif.latex?J%5Cddot%5Ctheta%20%3D%20-B%5Cdot%5Ctheta%20&plus;%20Ki_q%20-%20T_d)\
 ![Mot2](https://latex.codecogs.com/gif.latex?L%5Cfrac%7Bdi_q%7D%7Bdt%7D%20%3D%20-Ri_q%20-%20K%5Cdot%5Ctheta%20&plus;%20V_q%20-%20L%5Cdot%5Ctheta%20i_d)\
 ![Mot3](https://latex.codecogs.com/gif.latex?L%5Cfrac%7Bdi_d%7D%7Bdt%7D%20%3D%20-Ri_d%20&plus;%20V_d&plus;-%20L%5Cdot%5Ctheta%20i_q)
 
-Where we define:
-- theta: angular position in radians
-- dtheta: first time derivative of theta
-- ddtheta: second time derivative of theta
-- J: Inertia
-- L: Inductance
-- T_d: external torque
-- B: damping constant
-- R: Electrical Resistance
-- K: Motor constant
-- i_q: quadrature current
-- i_d: 
+For simplification, we ignore the coupling terms and the third equation (heat generation), and get:
 
-For our model, we ignore the coupling terms, and also ignore the i_d term. 
+![Mot5](https://latex.codecogs.com/png.latex?J%5Cddot%5Ctheta%20%3D%20-B%5Cdot%5Ctheta%20&plus;%20Ki_q%20-%20T_d%20%5C%5C%20L%5Cfrac%7Bdi_q%7D%7Bdt%7D%20%3D%20-Ri_q%20-%20K%5Cdot%5Ctheta%20&plus;%20V_m)
 
 ## State Space System
 We convert our systems of equations into state space form in order to discretely integrate using the Runge-Kutta method.
