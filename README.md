@@ -103,6 +103,7 @@ Target Theta = .3 radians \
 - Current Controller
 - Direct Force Controller (Position)
 - Velocity Controller \
+
 NOTE: Controller object is implemented into the Motor class which means the Motor Object can use the controllers by itself as well
 
 
