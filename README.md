@@ -97,12 +97,13 @@ Target Theta = .3 radians \
 ![Dynamic-Nonlinear-Test3](https://lh4.googleusercontent.com/7sl9BJlY3AloX_oqvUtdueLXSRfyiiIhGE35gLVtBKP-CXIEY0Y4fgsceI3YCPf6rSL-8xv_JSi4A7leSc12kIi1ce3JZhRJokPdJMVX)
 
 
-## Dynamic Testing
-
-
-
-
 ## PID Controller
+
+3 Types of Controllers are implemented:
+- Current Controller
+- Direct Force Controller (Position)
+- Velocity Controller
+NOTE: Controller object is implemented into the Motor class which means the Motor Object can use the controllers by itself as well
 
 
 
