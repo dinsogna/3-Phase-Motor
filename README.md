@@ -78,22 +78,26 @@ Example:
 ![Static-Test](https://lh6.googleusercontent.com/ZMCoguS-I42E5v7VdwFqnhNZE3gaBBjj15Srw1bcaTWSiESxxZ5J8ha40FUHNz3Gu-4VFmib2MBRyVJiSZqYu2Bt4q4Jh_cOJngOf9Q)
 
 
+## Dynamic Testing - Linearized Model
+We linearized our model and compared the output to a linearized closed form solution (using Matlab). We see that the models track well all target thetas.
+
+Target Theta = .05 radians \
+![Dynamic-Linear-Test1](https://lh5.googleusercontent.com/6_rz4pLFEqE-kImjueMaSRFqXLYjIKU5D7bzcG5TV8swZXEGTIE_sd6Bnh_Bt3M5-oOvq29l1O5kOE4eUJ3cweOJXhoqWcfztHrl1HV_)
+
+Target Theta = .3 radians \
+![Dynamic-Linear-Test3](https://lh6.googleusercontent.com/zqULvk_F5id_YL1WguthgIoGfkU7S14OPsSNm0tWe0I8kVSouqqbCoFwVh4d6HhXE6-486YUBuDjq72U_WX2SriSEujTsAlV_I8qIEiV)
+
+## Dynamic Testing - Nonlinear Model
+We compared our nonlinear model to a linearized closed form solution (using Matlab). We see that the models track well for small thetas, but diverges for larger angles.
+
+Target Theta = .05 radians \
+![Dynamic-Nonlinear-Test1](https://lh5.googleusercontent.com/-EFRhzWC2p0ZYLYThZkSSjvvZF-aGPS5Y2B4XPDkCya6xkRM7KCIZS_Y_D7la2tUkomzuJJKAsX1Vh6mQuMTyV5VeGDFRbwCeuoed8Vw)
+
+Target Theta = .3 radians \
+![Dynamic-Nonlinear-Test3](https://lh4.googleusercontent.com/7sl9BJlY3AloX_oqvUtdueLXSRfyiiIhGE35gLVtBKP-CXIEY0Y4fgsceI3YCPf6rSL-8xv_JSi4A7leSc12kIi1ce3JZhRJokPdJMVX)
+
+
 ## Dynamic Testing
-For dynamic testing, we compared the output of our nonlinear model to a linearized closed form solution (using Matlab). We see that the models track well for small input voltages, but diverge with higher voltages.
-
-[TBD] INCLUDE EQUATIONS\
-
-Vm = 0.001 \
-![output_step_0_001](https://github.com/dinsogna/3-Phase-Motor/blob/master/images/output_step_0_001.png) \
-
-Vm = 0.025 \
-![output_step_0_025](https://github.com/dinsogna/3-Phase-Motor/blob/master/images/output_step_0_025.png) \
-
-Vm = 0.1 \
-![output_step_0_1](https://github.com/dinsogna/3-Phase-Motor/blob/master/images/output_step_0_1.png) \
-
-Vm = 0.2 \
-![output_step_0_2](https://github.com/dinsogna/3-Phase-Motor/blob/master/images/output_step_0_2.png) \
 
 
 
