@@ -10,17 +10,33 @@
 #include "System.hpp"
 #include "Coupled.hpp"
 
+/*
+ DIRECTIONS
+ 1. set initial conditions
+    (if you want to change pendulum/motor properties, they are located within their respective classes)
+ 2. Choose controller type used in motor
+ 3. Create/run/print objects
+    Coupled (system with Pendulum and Motor)
+    Pendulum
+    Motor
+ 
+ Functions:
+    run() //calculates state spaces for objects within a time frame
+    printConsole() //prints state spaces
+    printFile(string) //puts data into a csv file
+ */
+
 int main() {
     
 	//========================
     //INITIAL CONDITIONS
     //========================
-    double theta=0;      //initial theta (radians)
+    double theta=1;      //initial theta (radians)
     double theta_dot=0;  //initial theta dot (radians/s)
     double iq=0;         //initial iq (amps)
     double voltage=0;  //initial voltage to motor Vm (volts)
     double torque=0;     //initial external torque (N*m)
-    double time=1;      //total time interval (seconds)
+    double time=5;      //total time interval (seconds)
     double dt=0.00001;       //size of one time step
 
     //========================
@@ -30,8 +46,8 @@ int main() {
 	//2: Direct Position Controller
 	//3: Velocity Controller
     //========================
-    int cont_select = 2;
-    double target=0.1;     //target for controller (torque, thetadot, or current)
+    int cont_select = 3;
+    double target=2;     //target for controller (torque, thetadot, or current)
 
     
     //========================
@@ -47,14 +63,16 @@ int main() {
     //PENDULUM SYSTEM
     //========================
     //Pendulum y(theta, theta_dot, time, dt);
-    //y.rk4_full(torque);
+    //y.run(torque);
     //y.printConsole();
+    //y.printFile("output.csv");
     
     
     //========================
     //MOTOR SYSTEM
     //========================
     //Motor z(theta_dot, iq, voltage, time, dt);
-    //z.rk4_full(torque, target, cont_select);
+    //z.run(torque, target, cont_select);
     //z.printConsole();
+    //z.printFile("output.csv");
 }

@@ -38,7 +38,7 @@ double Controller::foc_block(double cur, double tar){
 //INPUT: Velocity  OUTPUT: Current
 double Controller::velocity_block(double vel, double tar){
     double Kp=100;
-    double Ki=0.1;
+    double Ki=1;
     double Kd=0.000;
     double newError=tar-vel;
     double proportional=Kp*newError;
@@ -65,16 +65,15 @@ double Controller::current_control(double cur, double tar){
     return foc_block(cur, tar);
 }
 
-double Controller::velocity_control(double vel, double cur, double target_vel){
-    return foc_block(cur, velocity_block(vel, target_vel));
+double Controller::velocity_control(double vel, double cur, double target_vel, int reference){
+    if(reference%5==0)
+        tar_cur=velocity_block(vel, target_vel);
+    return foc_block(cur, tar_cur);
 }
 
 double Controller::direct_control(double pos, double cur, double target_pos, int reference){
-    
-    if(reference%5==0){
+    if(reference%5==0)
         tar_cur=pos_block(pos, target_pos);
-    }
-    //std::cout<<tar_cur<<std::endl;
     return foc_block(cur, tar_cur);
     
 }

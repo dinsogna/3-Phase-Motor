@@ -26,7 +26,6 @@ private:
     std::vector<double> T;
     double torque;
     std::vector<double> motor_torque;
-
     double time;
     double dt;
     int cont_select;

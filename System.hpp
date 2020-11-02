@@ -49,7 +49,7 @@ public:
     
     virtual state_type calculate(const state_type X, const double tor);
     virtual state_type rk4_step(state_type state, double dt, double &tor);
-    virtual void rk4_full(double torque);
+    virtual void run(double torque);
     virtual void printConsole();
     virtual void printFile(std::string filename);
 private:
@@ -70,7 +70,7 @@ public:
     virtual state_type calculate(const state_type X, const double tor);
     virtual state_type rk4_step(state_type state, double dt, double &tor);
     state_type controlled_rk4_step(state_type state, double dt, double &tor, double target, int cont_select, int reference);
-    virtual void rk4_full(double torque, double target, int cont_select);
+    virtual void run(double torque, double target, int cont_select);
     virtual void printConsole();
     virtual void printFile(std::string filename);
     

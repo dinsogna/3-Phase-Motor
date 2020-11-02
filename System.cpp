@@ -68,7 +68,7 @@ state_type Pendulum::rk4_step(state_type state, double dt, double &tor){
     
 }
 
-void Pendulum::rk4_full(double torque){
+void Pendulum::run(double torque){
     for(int i=0; i<getTimeSize(); i++){
         double input_torque=torque;
         addState(rk4_step(getState(i), getTime(1), input_torque));
@@ -89,12 +89,9 @@ void Pendulum::printFile(std::string fileName) {
     myfile.open(fileName);
     std::cout.setf(std::ios::fixed);
     std::cout.precision(5);
-    
     myfile <<"Time, Theta, Thetadot" << std::endl;
-
-    for(int a=0; a<getTimeSize(); a++){
+    for(int a=0; a<getTimeSize(); a++)
         myfile << getTime(a) << "," << getState(a)(0) << "," << getState(a)(1)<< std::endl;
-    }
     myfile.close();
     std::cout << "Results printed to " << fileName << std::endl;
     
@@ -170,7 +167,7 @@ state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, 
     		Vm=Vmax*cont.direct_control(relative_theta, state(1), target, reference);
 			break;
 		case 3: //VELOCITY CONTROLLER
-			Vm = Vmax*cont.velocity_control(state(0), state(1), target);
+			Vm = Vmax*cont.velocity_control(state(0), state(1), target, reference);
 			break;
         case 4: //SIN TEST
             Vm=Vmax*cont.direct_control(relative_theta, state(1), 0.2*sin(3.14*30*reference*dt), reference);
@@ -178,13 +175,12 @@ state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, 
 		default:
 			break;
 	}
-
     return rk4_step(state, dt, tor);
 }
 
 
 
-void Motor::rk4_full(double torque, double target, int cont_select){
+void Motor::run(double torque, double target, int cont_select){
     for(int i=0; i<getTimeSize(); i++){
         double input_torque=torque;
         addState(controlled_rk4_step(getState(i), getTime(1), input_torque, target, cont_select, i+1));
@@ -208,10 +204,8 @@ void Motor::printFile(std::string fileName) {
     
     myfile <<"Time, Thetadot, Current" << std::endl;
 
-    for(int a=0; a<getTimeSize(); a++){
+    for(int a=0; a<getTimeSize(); a++)
         myfile << getTime(a) << "," << getState(a)(0) << "," << getState(a)(1)<< std::endl;
-    }
     myfile.close();
     std::cout << "Results printed to " << fileName << std::endl;
-    
 }

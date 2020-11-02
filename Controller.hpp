@@ -24,7 +24,7 @@ public:
     
     
     double current_control(double cur, double tar);
-    double velocity_control(double vel, double cur, double target_vel);
+    double velocity_control(double vel, double cur, double target_vel, int reference);
     double direct_control(double pos, double cur, double target_pos, int reference);
     
 private:
