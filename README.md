@@ -106,7 +106,7 @@ Target Theta = .3 radians \
 
 NOTE: Controller object is implemented into the Motor class which means the Motor Object can use the controllers by itself as well
 
-## Current Controller
+## Current Control
 
 ![Current-Block](https://lh4.googleusercontent.com/ThcV6LKUb4RncDMt8zfWv21-IXhpASJQYsUCP5crXS2pRuMW0XkwY74KkxdPQr5Foq3ujaajKej9NhuCbRrpjDY7t9-R6YNPVA8Y1_XLc_nWy-837tY4wGgx1TeuT5gGDgNixBDq7As)
 
@@ -118,9 +118,9 @@ Example with gains:
 
 ![Current-Graph](https://lh4.googleusercontent.com/3r9FkyBXx2piluFJjRb6LvMQNKPNRiYUiIgSIZuwYMBpwzgEUKYukwbmOeGXyHbNNVDUBos-aWgvQGTYitV2D50ni5aMWyMgRTbTHsOsI0C_s0s6hn5wavBdfRRz0ZGe4sz0TJ5gwKk)
 
-## Direct Force Controller (Position Control)
+## Direct Force Control (Position Control)
 
-![Current-Block](https://lh5.googleusercontent.com/bjCzKmLPfc48_pTrsYphNCnxQlZ7TnE3CM7y5FmZpNwDeRmoYP9TacBbtaUCtAGhd-ZeWLGeGNSWYFMz5CQ5JOAmABkSO-8ygHswC6qugO_BJQ_0WqWNywzBi408u8wbJI-uQE70fWE)
+![DF-Block](https://lh5.googleusercontent.com/bjCzKmLPfc48_pTrsYphNCnxQlZ7TnE3CM7y5FmZpNwDeRmoYP9TacBbtaUCtAGhd-ZeWLGeGNSWYFMz5CQ5JOAmABkSO-8ygHswC6qugO_BJQ_0WqWNywzBi408u8wbJI-uQE70fWE)
 
 Example with gains:
 - P = 300
@@ -128,7 +128,43 @@ Example with gains:
 - D = 1.3
 - Target position = 0.1 radians
 
-![Current-Graph](https://lh5.googleusercontent.com/M8V6_fsfIRaBB3f0dPTOm4xeGIalILcE3-c7gJYFIMdDWf2kQ9oh0g3X6VcD2nSqmxDoIe0lWaLOXXyIOgOWjUbSxbrmf7Gpn-8DOD2NuCiTVvWu2YLI1B1FcBV-BBKY8xDtt2LCC4k)
+![DF-Graph](https://lh5.googleusercontent.com/M8V6_fsfIRaBB3f0dPTOm4xeGIalILcE3-c7gJYFIMdDWf2kQ9oh0g3X6VcD2nSqmxDoIe0lWaLOXXyIOgOWjUbSxbrmf7Gpn-8DOD2NuCiTVvWu2YLI1B1FcBV-BBKY8xDtt2LCC4k)
+
+## Velocity Control
+
+![Velocity-Block](https://lh3.googleusercontent.com/dJTENk6kOCVQkvCllq6utwWWp6G8TFQUImiB-6hQDNnck_JKCECAd3j2g8TfrZdGNddkJK5oPdf1svxlBkCvzJB5I2wETp53BWancj81lSHDzZm-Z_VrYjuQ2sDs7AQ3TQ0xf2tTjm8)
+
+Example with gains:
+- P = 100
+- I = 1
+- D = 0
+- Target velocity = radians/s
+
+![Velocity-Graph](https://lh6.googleusercontent.com/ux4sEevQeI4DdUZxv8qvQIAtlLPXLOMpM3OKEqzPA-5N7D6ZgGtidmKhixs0xSS9UQFM9ApXm4t7eajNSMyAnY1z2a4cqsA3H5sgjWYpMk0g1r6uK1YNl6TevVXce-ND9fkm92SXpbY)
+
+## Closed Loop Test - Step Response
+
+Target = .1 radians \
+![SR1](https://lh6.googleusercontent.com/xOBeIUrqgFUxi6SdgLUIRn_qnj8DhbdZeu6C4yFe-G5lGAID4sLn5PP8w-72vJeEL18WdoMwj0HA0p1grkS3awTbEpyVfXT02oDuK_q3Q6pOcjlW2fAWjenBHRjWKUI0l2PgjGONAC4)
+
+Target = .2 radians \
+![SR2](https://lh6.googleusercontent.com/QvPU6GMYqmQeCaCAG8KmM1ui4TO0mft-sSZyaN0YeCx2B-jVe-1op1rlJ3TtU8bS8LltI7eUDs0EP1LGmw9KCTnBMzTGseAnFpjNVQe8pFMA2nJOrJOq5LIyxYfjOuoqQVHxxPj0ukM)
+
+Target = .3 radians \
+![SR3](https://lh5.googleusercontent.com/w7Z8_u2QOSddqKwrfWeOBS4kzXXeqAh6qnzLvlaNx_BOpCG-5mKGaxJTqa_qBXJn7GJ1EGWt9q05aXHwpA4a4nAV2gAO1caXBrQCPcOnMiTxx-4vLEYgJfsanSrOHyRPXhj31VSyJc8)
+
+## Closed Loop Test - Sine Wave Position Test
+
+5Hz \
+![SW1](https://lh4.googleusercontent.com/SZJYTnnwwTNr8mBWm71ie_WsUkoKrX6-_1F3XzsAjn47eDvRjYVdjXUd0_46QlpZUNEYT-Su-Ws1YKnrklq1ptGD4fLKhldiObeRxwvw)
+
+10Hz \
+![SW2](https://lh3.googleusercontent.com/ycPtGPuwBfesi3yL6arGJQ5oocu75MXk9h8p_J2rZ0Yd7ogddXgQQ3mEu_7UULjg9McHr3CZdarathYLF-1SJa8Ob3KIZbacPZW5XIXe-JZx4-W4ugwczcMF54QT-WBPchBpjphaDEI)
+
+15 Hz \
+![SW3](https://lh4.googleusercontent.com/auqHYz7Gx1H_OYmJ_zTm-rN1f8naODRApNDBJW3Jz8MwDzNQj_wQMpNNl1rFZqpwBStrqNnCj8Neq_IThVYkvuXJZoHaNdSjmbmc06_PtpJVMl26NozB_ArywJ1de8QilcDu2GTTVnQ)
+
+
 
 
 
