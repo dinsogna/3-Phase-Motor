@@ -30,11 +30,6 @@ Where we define:
 •	m: mass of pendulum
 •	l: length of pendulum
 
-We can rewrite this 2nd order ODE as a system of two 1st order ODEs as such:
-
-![Pend2](https://latex.codecogs.com/gif.latex?%5Cdot%5Ctheta%20%3D%20x)\
-![Pend3](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bdx%7D%7Bdt%7D%20%3D%20%5Cfrac%7Bu%7D%7Bml%5E2%7D%20-%20%5Cfrac%7Bb%5Cdot%5Ctheta%7D%7Bml%5E2%7D%20-%20%5Cfrac%7Bg%7D%7Bl%7D%5Csin%5Ctheta)
-
 ## PMSM Equations
 The PMSM can be modeled using a system of 2nd Order ODEs representing the mechanical and electrical properties of the motor:
 
@@ -112,22 +107,18 @@ int main() {
 
 
 ## Source File Description / Map
--	Pendulum.cpp
-Simple Pendulum[TBD]
-
--	Motor.cpp
-Three phase motor [TBD]
-
--	Coupler.cpp
-Couples the pendulum to the motor. [TBD]
-
--	Main.cpp
-[TBD]
+The C++ has four main classes:
+- System: Superclass that includes Pendulum and Motor objects and their characteristics.
+- Coupled: Couples the Pendulum and Motor objects.
+- Controller: Implements controller logic
+- Main: Sets initial conditions and runs model
 
 ## Running the Model
-[TBD]
+Step 1: Set the pendulum and motor properties in System class \
+Step 2: Set initial conditions in main() \
+Step 3: Run main() \
+Step 4: Output is printed to console and/or output file \
 
-# Custom RK4 vs ODEINT
 
 ## Static Testing
 In a static state, such that angular acceleration and velocity are zero, our motor can be represented by:\
