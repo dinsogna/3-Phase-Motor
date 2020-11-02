@@ -1,11 +1,4 @@
-# Three-Phase Motor & Pendulum System in C++
-
-\*To Do:
--	Graphs – control loops, dynamics equations – how they are connected, 
--	illustration of the code structure
--	How to run test codes / comparisons / basic tests
--	Github Markup / Latex? For math
-\*
+# Three-Phase Motor & Pendulum System Model in C++
 
 ## Authors
 - Andrew Chen: achen2001@g.ucla.edu
@@ -14,7 +7,7 @@
 - Gabriel Fernandez (Advisor): gabriel808@g.ucla.edu
 
 ## Description
-C++ model of a three-phase (PMSM) DC motor connected to a simple physical pendulum using the Runge-Kutta 4 integration method
+C++ model of a three-phase (PMSM) brushless DC motor connected to a simple physical pendulum using the Runge-Kutta 4 integration method
 
 ## Setup and Dependencies
 - C++ Version: 11
