@@ -97,7 +97,7 @@ Target Theta = .3 radians \
 ![Dynamic-Nonlinear-Test3](https://lh4.googleusercontent.com/7sl9BJlY3AloX_oqvUtdueLXSRfyiiIhGE35gLVtBKP-CXIEY0Y4fgsceI3YCPf6rSL-8xv_JSi4A7leSc12kIi1ce3JZhRJokPdJMVX)
 
 
-## PID Controller
+## PID Controllers
 
 3 Types of Controllers are implemented:
 - Current Controller
@@ -106,6 +106,29 @@ Target Theta = .3 radians \
 
 NOTE: Controller object is implemented into the Motor class which means the Motor Object can use the controllers by itself as well
 
+## Current Controller
+
+![Current-Block](https://lh4.googleusercontent.com/ThcV6LKUb4RncDMt8zfWv21-IXhpASJQYsUCP5crXS2pRuMW0XkwY74KkxdPQr5Foq3ujaajKej9NhuCbRrpjDY7t9-R6YNPVA8Y1_XLc_nWy-837tY4wGgx1TeuT5gGDgNixBDq7As)
+
+Example with gains:
+- P = 0.07
+- I = 0.02
+- D = 0
+- Target current = 0.1A
+
+![Current-Graph](https://lh4.googleusercontent.com/3r9FkyBXx2piluFJjRb6LvMQNKPNRiYUiIgSIZuwYMBpwzgEUKYukwbmOeGXyHbNNVDUBos-aWgvQGTYitV2D50ni5aMWyMgRTbTHsOsI0C_s0s6hn5wavBdfRRz0ZGe4sz0TJ5gwKk)
+
+## Direct Force Controller (Position Control)
+
+![Current-Block](https://lh5.googleusercontent.com/bjCzKmLPfc48_pTrsYphNCnxQlZ7TnE3CM7y5FmZpNwDeRmoYP9TacBbtaUCtAGhd-ZeWLGeGNSWYFMz5CQ5JOAmABkSO-8ygHswC6qugO_BJQ_0WqWNywzBi408u8wbJI-uQE70fWE)
+
+Example with gains:
+- P = 300
+- I = 20
+- D = 1.3
+- Target position = 0.1 radians
+
+![Current-Graph](https://lh5.googleusercontent.com/M8V6_fsfIRaBB3f0dPTOm4xeGIalILcE3-c7gJYFIMdDWf2kQ9oh0g3X6VcD2nSqmxDoIe0lWaLOXXyIOgOWjUbSxbrmf7Gpn-8DOD2NuCiTVvWu2YLI1B1FcBV-BBKY8xDtt2LCC4k)
 
 
 
