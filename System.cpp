@@ -8,6 +8,7 @@
 
 #include "System.hpp"
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include "Controller.hpp"
 
@@ -27,30 +28,10 @@ void System::addState(state_type x){values.push_back(x);}
 state_type System::getState(int x) {return values[x];}
 state_type System::getBackState() {return values.back();}
 int System::getSize() {return values.size();}
-
-void System::rk4_full(double torque, double target){
-    for(int i=0; i<T.size(); i++){
-        addState(rk4_step(getState(i), T[1], torque));
-    }
-}
-
-double System::getTime(int i){
-    return T[i];
-}
-
-int System::getTimeSize(){
-    return T.size();
-}
+double System::getTime(int i){return T[i];}
+int System::getTimeSize(){return T.size();}
 
 
-void System::printOutput(){
-    std::cout.setf(std::ios::fixed);
-    std::cout.precision(5);
-    std::cout<<"Time         First         Second"<<std::endl;
-    for(int i=0; i<values.size()-1; i++)
-        std::cout<<T[i]<<"         "<<values[i](0)<<"         "<<values[i](1)<<std::endl;
-    std::cout << "Finished System" << std::endl;
-}
 
 
 //=========================================================================================
@@ -87,6 +68,37 @@ state_type Pendulum::rk4_step(state_type state, double dt, double &tor){
     
 }
 
+void Pendulum::rk4_full(double torque){
+    for(int i=0; i<getTimeSize(); i++){
+        double input_torque=torque;
+        addState(rk4_step(getState(i), getTime(1), input_torque));
+    }
+}
+
+void Pendulum::printConsole(){
+    std::cout.setf(std::ios::fixed);
+    std::cout.precision(5);
+    std::cout<<"Time         Theta         Thetadot"<<std::endl;
+    for(int i=0; i<getTimeSize(); i++)
+        std::cout<<getTime(i)<<"         "<<getState(i)(0)<<"         "<<getState(i)(1)<<std::endl;
+    std::cout << "Finished Pendulum" << std::endl;
+}
+
+void Pendulum::printFile(std::string fileName) {
+    std::ofstream myfile;
+    myfile.open(fileName);
+    std::cout.setf(std::ios::fixed);
+    std::cout.precision(5);
+    
+    myfile <<"Time, Theta, Thetadot" << std::endl;
+
+    for(int a=0; a<getTimeSize(); a++){
+        myfile << getTime(a) << "," << getState(a)(0) << "," << getState(a)(1)<< std::endl;
+    }
+    myfile.close();
+    std::cout << "Results printed to " << fileName << std::endl;
+    
+}
 
 //=========================================================================================
 //MOTOR FUNCTIONS
@@ -100,7 +112,7 @@ Motor::Motor(double theta_dot, double Iq, double voltage, double time, double dt
     J= 0.0001;
     Vm= voltage;
     relative_theta=0;
-    gear_ratio = 10; //NEW
+    gear_ratio = 10;
 }
 
 state_type Motor::calculate(const state_type X, const double tor){
@@ -127,7 +139,7 @@ state_type Motor::calculate(const state_type X, const double tor){
 
 state_type Motor::rk4_step(state_type state, double dt, double &tor){
     
-    // std::cout <<"rk4step motor" << std::endl; // TEST ONLY
+
     tor/=gear_ratio;
     state(0)*=gear_ratio;
     double h = dt;
@@ -152,46 +164,54 @@ state_type Motor::controlled_rk4_step(state_type state, double dt, double &tor, 
     
 	switch(cont_select) {
 		case 1: //CURRENT CONTROLLER
-			// std::cout << "current control" << std::endl; //TEST ONLY
     		Vm=Vmax*cont.current_control(state(1), target);
 			break;
 		case 2: //DIRECT POSITION CONTROLLER
-    		// std::cout << "direct position control" << std::endl; //TEST ONLY
     		Vm=Vmax*cont.direct_control(relative_theta, state(1), target, reference);
 			break;
 		case 3: //VELOCITY CONTROLLER
-			// std::cout << "velocity control" << std::endl; //TEST ONLY
 			Vm = Vmax*cont.velocity_control(state(0), state(1), target);
 			break;
         case 4: //SIN TEST
-            Vm=Vmax*cont.direct_control(relative_theta, state(1), 0.5*sin(3.14*30*reference*dt), reference);
+            Vm=Vmax*cont.direct_control(relative_theta, state(1), 0.2*sin(3.14*30*reference*dt), reference);
             break;
 		default:
-			// std::cout << "default control" << std::endl; //TEST ONLY
 			break;
-
 	}
 
-    
     return rk4_step(state, dt, tor);
 }
 
 
-//Just for Motor testing
+
 void Motor::rk4_full(double torque, double target, int cont_select){
-    torque_list.push_back(0);
     for(int i=0; i<getTimeSize(); i++){
         double input_torque=torque;
         addState(controlled_rk4_step(getState(i), getTime(1), input_torque, target, cont_select, i+1));
-        //torque_list.push_back(input_torque-torque);
     }
 }
 
-void Motor::printOutput(){
+void Motor::printConsole(){
     std::cout.setf(std::ios::fixed);
     std::cout.precision(5);
-    std::cout<<"Time         First         Second"<<std::endl;
+    std::cout<<"Time         Thetadot         Current"<<std::endl;
     for(int i=0; i<getTimeSize(); i++)
-        std::cout<<getTime(i)<<"         "<<getState(i)(0)<<"         "<<getState(i)(1)<<"         "<<torque_list[i]<<std::endl;
-    std::cout << "Finished System" << std::endl;
+        std::cout<<getTime(i)<<"         "<<getState(i)(0)<<"         "<<getState(i)(1)<<std::endl;
+    std::cout << "Finished Motor" << std::endl;
+}
+
+void Motor::printFile(std::string fileName) {
+    std::ofstream myfile;
+    myfile.open(fileName);
+    std::cout.setf(std::ios::fixed);
+    std::cout.precision(5);
+    
+    myfile <<"Time, Thetadot, Current" << std::endl;
+
+    for(int a=0; a<getTimeSize(); a++){
+        myfile << getTime(a) << "," << getState(a)(0) << "," << getState(a)(1)<< std::endl;
+    }
+    myfile.close();
+    std::cout << "Results printed to " << fileName << std::endl;
+    
 }

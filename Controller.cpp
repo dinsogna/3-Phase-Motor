@@ -23,8 +23,8 @@ Controller::Controller(double theta_dot, double time){
 
 //INPUT: Current  OUTPUT: Voltage
 double Controller::foc_block(double cur, double tar){
-    double Kp=0.05; //0.01
-    double Ki=0.005; //40
+    double Kp= 0.07;
+    double Ki= 0.02;
     double Kd=0;
     double newError=tar-cur;
     double proportional=Kp*newError;
@@ -50,9 +50,9 @@ double Controller::velocity_block(double vel, double tar){
 
 //INPUT: Position  OUTPUT: Current
 double Controller::pos_block(double pos, double tar){
-    double Kp=250;
+    double Kp=300;
     double Ki= 20;
-    double Kd=5;   //100;
+    double Kd=1.3;
     double newError=tar-pos;
     double proportional=Kp*newError;
     pos_integral+=Ki*(newError)*dt;
