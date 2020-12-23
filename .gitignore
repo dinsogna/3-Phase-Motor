@@ -1,0 +1,6 @@
+gazebo_code/gazebo_plugin_tutorial/.vscode/*
+gazebo_code/gazebo_plugin_tutorial/CMakeFiles/*
+gazebo_code/gazebo_plugin_tutorial/build/*
+gazebo_code/test_pendulum/.vscode/*
+gazebo_code/test_pendulum/build/*
+gazebo_code/test_pendulum/CMakeFiles/*
