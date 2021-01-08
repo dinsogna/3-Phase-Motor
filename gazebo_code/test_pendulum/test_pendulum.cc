@@ -28,46 +28,55 @@ namespace gazebo
 
     }
 
-    private:  state_type UpdateMotor(double t, state_type X) {
+    private:  state_type UpdateMotor(const state_type X, const double tor) {
+      if(Vm>Vmax)
+        Vm=Vmax;
+      else if(Vm<0-Vmax)
+        Vm=0-Vmax;
+
       state_type state(N);
 
       Eigen::MatrixXd A(2,2);
       A << (-B/J), (K/J), (-K/L), (-R/L);
+      
       Eigen::MatrixXd B(2,2);
       B << (-1/J), 0, 0, (1/L);
+      
       Eigen::MatrixXd C(2,1);
-      // C << Td, Vm; // do we need to add a Td parameter? Or store / update as global var
+      C << tor, Vm;
 
       state = A*X + B*C;
+      
       return state;
     }
 
-    private: state_type RK4_Step(double t, state_type state, double dt) 
+    private: state_type RK4_Step(state_type state, double dt, double &tor) 
     {
+
+      tor/=gear_ratio;
+      state(0)*=gear_ratio;
+
       double h = dt;
       double h2 = 0.5*h;
       double h6 = h/6.0;
 
-      state_type k1 = UpdateMotor(t, state);
-      state_type k2 = UpdateMotor(t + h2, state + h2*k1);
-      state_type k3 = UpdateMotor(t + h2, state + h2*k1);
-      state_type k4 = UpdateMotor(t + h, state + h*k3);
+      state_type k1 = UpdateMotor(state, tor);
+      state_type k2 = UpdateMotor(state + h2*k1, tor);
+      state_type k3 = UpdateMotor(state + h2*k1, tor);
+      state_type k4 = UpdateMotor(state + h*k3, tor);
     
-      return state + h6*(k1 + 2.0*(k2 + k3) + k4);
+      tor = ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
+
+      state_type newState = state + h6*(k1 + 2.0*(k2 + k3) + k4);
+      // tor = ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
+      tor = ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
+      return newState;
   }
 
 
 
     public: void Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
     {
-      
-      // TESTING ONLY
-      // state_type s1(2);
-      // s1(0) = 6;
-      // s1(1) = 9;
-      // std::cout<< "s1(0): " << s1(0) << std::endl;
-      // std::cout<< "s1(1): " << s1(1) << std::endl;
-      //
 
       //========================
       //INITIAL CONDITIONS
@@ -77,9 +86,30 @@ namespace gazebo
       double iq=0;         //initial iq (amps)
       double voltage=.07801;  //initial voltage to motor Vm (volts)
       double torque=0;     //initial external torque (N*m)
-      double time=30;      //total time interval (seconds)
+      // double time=30;      //total time interval (seconds)
       // double dt=0.0001;       //size of one time step (No longer need!)
       ///////////////////////////
+
+      //========================
+      //INITIALIZE MOTOR
+      //========================
+      Vmax= 30;
+      R= 0.16;
+      L= 0.00018;
+      K= 0.088;
+      B= .001;
+      J= 0.0001;
+      Vm= voltage;
+      relative_theta=0;
+      gear_ratio = 10;
+
+      //========================
+      //INITIALIZE PENDULUM (use sdf file******)
+      //========================
+      g=9.81;
+      l= 0.37;
+      b= 0.07;
+      m= 0.4;
 
 
       // Store the pointer to the model
@@ -112,6 +142,7 @@ namespace gazebo
       // Apply a small linear velocity to the model.
       //this->model->SetLinearVel(ignition::math::Vector3d(.3, .3, 0));
         count=count +.001;
+
         //this->R1->SetPosition(0,M_PI/4);
         //std::cout<< this->R1->GetForceTorque(0).body1Torque << std::endl; // WRONG
         ignition::math::Vector3d t1(100,0,0);
@@ -122,7 +153,9 @@ namespace gazebo
         // std::cout<< "" << std::endl;
         //this->R1->GetVelocity(0);
 
-        
+        //get initial pendulum state
+        // state_type pend1(N) << this
+
     }
 
     // Pointer to the model
@@ -144,6 +177,12 @@ namespace gazebo
         std::vector<state_type> values;
         std::vector<double> T; // for motor only testing
 
+        double theta;      //initial theta (radians)
+        double theta_dot;  //initial theta dot (radians/s)
+        double iq;         //initial iq (amps)
+        double voltage;  //initial voltage to motor Vm (volts)
+        double torque; 
+
         //MOTOR CONSTANTS
         double Vmax;
         double R;
@@ -156,7 +195,7 @@ namespace gazebo
         double gear_ratio; 
         double relative_theta;
 
-        //PENDULUM CONSTANTS (set in .world file)
+        //PENDULUM CONSTANTS (set in .world file; can access through sdf parameter in Load())
         double g;
         double l;
         double b;
