@@ -65,11 +65,12 @@ namespace gazebo
       state_type k3 = UpdateMotor(state + h2*k1, tor);
       state_type k4 = UpdateMotor(state + h*k3, tor);
     
-      tor = ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
-
-      state_type newState = state + h6*(k1 + 2.0*(k2 + k3) + k4);
-      // tor = ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
-      tor = ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
+      double a=(k1(0) + (2.0*(k2(0) + k3(0))) + k4(0))/(6*gear_ratio);
+    
+      state_type newState = state+(h6*(k1 + (2.0*(k2 + k3)) + k4));
+      tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
+      newState(0)/= gear_ratio;
+      relative_theta += (newState(0)*dt);
       return newState;
   }
 
@@ -81,11 +82,11 @@ namespace gazebo
       //========================
       //INITIAL CONDITIONS
       //========================
-      double theta=.3;      //initial theta (radians)
-      double theta_dot=0;  //initial theta dot (radians/s)
-      double iq=0;         //initial iq (amps)
-      double voltage=.07801;  //initial voltage to motor Vm (volts)
-      double torque=0;     //initial external torque (N*m)
+      this->theta=.3;      //initial theta (radians)
+      this->theta_dot=0;  //initial theta dot (radians/s)
+      this->iq=0;         //initial iq (amps)
+      this->voltage=.07801;  //initial voltage to motor Vm (volts)
+      this->torque=0;     //initial external torque (N*m)
       // double time=30;      //total time interval (seconds)
       // double dt=0.0001;       //size of one time step (No longer need!)
       ///////////////////////////
@@ -93,23 +94,23 @@ namespace gazebo
       //========================
       //INITIALIZE MOTOR
       //========================
-      Vmax= 30;
-      R= 0.16;
-      L= 0.00018;
-      K= 0.088;
-      B= .001;
-      J= 0.0001;
-      Vm= voltage;
-      relative_theta=0;
-      gear_ratio = 10;
+      this->Vmax= 30;
+      this->R= 0.16;
+      this->L= 0.00018;
+      this->K= 0.088;
+      this->B= .001;
+      this->J= 0.0001;
+      this->Vm= voltage;
+      this->relative_theta=0;
+      this->gear_ratio = 10;
 
       //========================
-      //INITIALIZE PENDULUM (use sdf file******)
+      //INITIALIZE PENDULUM (***use sdf file***)
       //========================
-      g=9.81;
-      l= 0.37;
-      b= 0.07;
-      m= 0.4;
+      this->g=9.81;
+      this->l= 0.37;
+      this->b= 0.07;
+      this->m= 0.4;
 
 
       // Store the pointer to the model
