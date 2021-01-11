@@ -10,6 +10,8 @@
 #include <math.h>
 #include <vector>
 #include <gazebo/util/system.hh>
+#include <unsupported/Eigen/MatrixFunctions>
+
 
 
 
@@ -28,64 +30,58 @@ namespace gazebo
 
     }
 
-    private:  state_type UpdateMotor(const state_type X, const double tor) {
-      if(Vm>Vmax)
-        Vm=Vmax;
-      else if(Vm<0-Vmax)
-        Vm=0-Vmax;
-
-      state_type state(N);
-
-      Eigen::MatrixXd A(2,2);
-      A << (-B/J), (K/J), (-K/L), (-R/L);
+    private:  double UpdateMotor() {
+      if(v_m>v_max)
+        v_m=v_max;
+      else if(v_m<0-v_max)
+        v_m=0-v_max;
       
-      Eigen::MatrixXd B(2,2);
-      B << (-1/J), 0, 0, (1/L);
+      state_type X(N);
+      X = state;
+      state(0) = (this->L1->RelativeAngularVel().X()*gear_ratio);
       
-      Eigen::MatrixXd C(2,1);
-      C << tor, Vm;
+      state_type U(N);
+      U <<this->L1->RelativeTorque().X()/gear_ratio, v_m;
 
-      state = A*X + B*C;
+      state = this->G*X + this->H*U;
+
+      double torque = (C.transpose() * state)(0); //Test correct size matrix
+      return torque *= gear_ratio;
+
       
-      return state;
+      
+
+      
+  
     }
 
-    private: state_type RK4_Step(state_type state, double dt, double &tor) 
-    {
+    //run 
+    private: void convertToDiscrete() {
+      // G = e^AT (Matrix exponential)
+      
+      G = (A*T).exp();
+      
+      // H = (G-I_2x2)*B(A^-1)
+     
+      H = (G - I)*(B*(A.inverse()));
+      //G and H are now global vars
 
-      tor/=gear_ratio;
-      state(0)*=gear_ratio;
-
-      double h = dt;
-      double h2 = 0.5*h;
-      double h6 = h/6.0;
-
-      state_type k1 = UpdateMotor(state, tor);
-      state_type k2 = UpdateMotor(state + h2*k1, tor);
-      state_type k3 = UpdateMotor(state + h2*k1, tor);
-      state_type k4 = UpdateMotor(state + h*k3, tor);
-    
-      double a=(k1(0) + (2.0*(k2(0) + k3(0))) + k4(0))/(6*gear_ratio);
-    
-      state_type newState = state+(h6*(k1 + (2.0*(k2 + k3)) + k4));
-      tor= ((-J*a) - (B*newState(0)) + (K*newState(1)))*gear_ratio;
-      newState(0)/= gear_ratio;
-      relative_theta += (newState(0)*dt);
-      return newState;
-  }
+    }
 
 
 
     public: void Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
     {
 
+      
+
       //========================
       //INITIAL CONDITIONS
       //========================
       this->theta=.3;      //initial theta (radians)
-      this->theta_dot=0;  //initial theta dot (radians/s)
+      // this->theta_dot=0;  //initial theta dot (radians/s)
       this->iq=0;         //initial iq (amps)
-      this->voltage=.07801;  //initial voltage to motor Vm (volts)
+      this->voltage=.009;  //initial voltage to motor Vm (volts)
       this->torque=0;     //initial external torque (N*m)
       // double time=30;      //total time interval (seconds)
       // double dt=0.0001;       //size of one time step (No longer need!)
@@ -94,29 +90,48 @@ namespace gazebo
       //========================
       //INITIALIZE MOTOR
       //========================
-      this->Vmax= 30;
-      this->R= 0.16;
-      this->L= 0.00018;
-      this->K= 0.088;
-      this->B= .001;
-      this->J= 0.0001;
-      this->Vm= voltage;
-      this->relative_theta=0;
+      this->v_max= 30;
+      this->r= 0.16; //resistance
+      this->l= 0.00018; //inductance
+      this->k= 0.088; //motor constant
+      this->b= .001;  //damping
+      this->j= 0.0001;  //inertia of motor
+      this->v_m= voltage;
       this->gear_ratio = 10;
 
       //========================
       //INITIALIZE PENDULUM (***use sdf file***)
       //========================
-      this->g=9.81;
-      this->l= 0.37;
-      this->b= 0.07;
-      this->m= 0.4;
+      // this->g=9.81;
+      // this->l= 0.2;
+      // this->b= 0.00;
+      // this->m= 1.0;
 
+      this->state << 0, iq;
+
+      this->A(2,2);
+      A << (-b/j), (k/j), (-k/l), (-r/l);
+      
+      this->B(2,2);
+      B << (-1/j), 0, 0, (1/l);
+      
+      this->C(2,1);
+      C << torque, v_m;
+
+      this->D(2,1);
+      D << 0, 0;
+
+      this->I(2,2);
+      I << 1,0,0,1;
+
+      this->G(2,2);
+      this->H(2,2);
 
       // Store the pointer to the model
       this->model = _parent;
       // Sets the joint pointer
-      this->R1 = this->model->GetJoint("J01");
+      this->R1 = this->model->GetJoint("J01");export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/Desktop/Gazebo-Projects/gazebo_tutorials/gazebo_plugin_tutorial/build
+
       // get the link pointer for L1 (could have a problem if multiple children for now gets the fist child?)
       this->L1=this->R1->GetChild();
       this->L0=this->R1->GetParent();
@@ -138,24 +153,44 @@ namespace gazebo
       // Calculate the dt at each step
       double dt = (_info.simTime - this->lastUpdate).Double();
       this->lastUpdate = _info.simTime;
+      
+      //first step or when T!=dt
+      if (T != dt) {
+        this->T = dt;
+        convertToDiscrete();
+      }
       // std::cout << "dt: " << dt <<"; lastUpdate: " << this->lastUpdate<< "; simtime: " << _info.simTime << std::endl; //test 
+      
+      // X = state;
+      // state(0) = this->L1->RelativeAngularVel();
+      // // U (input)
+      // //Will need to consider gear ratio; torque / 10, vel * 10???
+      // state_type U <<this->L1->RelativeTorque(), Vm; //2x1 vector
+
+      // state_type state = A*X + B*U;
+
+      // torque = C * state
+      // torque *= 10;
+      // this->L1->AddTorque(ignition::math::Vector3d (torque,0,0));
+
+      this->L1->AddTorque(ignition::math::Vector3d (UpdateMotor(),0,0));
 
       // Apply a small linear velocity to the model.
       //this->model->SetLinearVel(ignition::math::Vector3d(.3, .3, 0));
-        count=count +.001;
+      // count=count +.001;
 
-        //this->R1->SetPosition(0,M_PI/4);
-        //std::cout<< this->R1->GetForceTorque(0).body1Torque << std::endl; // WRONG
-        ignition::math::Vector3d t1(100,0,0);
-        // this->L1->AddTorque(t1);
-        // std::cout<< this->L1->RelativeAngularAccel()<< std::endl;
-        // std::cout<< this->L1->RelativeAngularVel()<< std::endl;
-        // std::cout<< this->L1->RelativeTorque()<< std::endl;
-        // std::cout<< "" << std::endl;
-        //this->R1->GetVelocity(0);
+      //this->R1->SetPosition(0,M_PI/4);
+      //std::cout<< this->R1->GetForceTorque(0).body1Torque << std::endl; // WRONG
+      ignition::math::Vector3d t1(100,0,0); // (torque,0,0)
+      this->L1->AddTorque(t1);
+      // std::cout<< this->L1->RelativeAngularAccel()<< std::endl;
+      // std::cout<< this->L1->RelativeAngularVel()<< std::endl;
+      // std::cout<< this->L1->RelativeTorque()<< std::endl;
+      // std::cout<< "" << std::endl;
+      //this->R1->GetVelocity(0);
 
-        //get initial pendulum state
-        // state_type pend1(N) << this
+      //get initial pendulum state
+      // state_type pend1(N) << this
 
     }
 
@@ -173,34 +208,60 @@ namespace gazebo
         event::ConnectionPtr updateConnection;
 
         //SYSTEM CONSTANTS
-        double count=0;
+        // double count=0;
         common::Time lastUpdate;
-        std::vector<state_type> values;
-        std::vector<double> T; // for motor only testing
+        double T=-1; //discrete time step*
+        // double dt;
+        // std::vector<state_type> values;
+        // std::vector<double> T; // for motor only testing
 
+        //INITIAL CONDITIONS (originally main())
         double theta;      //initial theta (radians)
-        double theta_dot;  //initial theta dot (radians/s)
-        double iq;         //initial iq (amps)
+        // double theta_dot;  //initial theta dot (radians/s)
+        // double iq;         //initial iq (amps)
+        state_type state; 
         double voltage;  //initial voltage to motor Vm (volts)
         double torque; 
 
         //MOTOR CONSTANTS
-        double Vmax;
-        double R;
-        double L;
-        double K;
-        double B;
-        double J;
-        double Vm;
-        double Iq;
+        double v_max;
+        double r;
+        double l;
+        double k;
+        double b; //damping
+        double j;
+        double v_m;
+        double iq;
         double gear_ratio; 
-        double relative_theta;
+        // double relative_theta;
+
+        //Continuous time state space/ initialize in Load()
+
+        Eigen::MatrixXd A;
+        // A << (-B/J), (K/J), (-K/L), (-R/L);
+        
+        Eigen::MatrixXd B;
+        // B << (-1/J), 0, 0, (1/L);
+        
+        Eigen::MatrixXd C;
+        // C << tor, Vm;
+
+        Eigen::MatrixXd D;
+        //D << 0, 0;
+
+        Eigen::MatrixXd G;
+        Eigen::MatrixXd H;
+
+        Eigen::MatrixXd I;
+        // Matrix<double, 2, 2>::Identity() << endl;
+
+        
 
         //PENDULUM CONSTANTS (set in .world file; can access through sdf parameter in Load())
-        double g;
-        double l;
-        double b;
-        double m;
+        // double g;
+        // double l;
+        // double b;
+        // double m;
   };
 
   // Register this plugin with the simulator
