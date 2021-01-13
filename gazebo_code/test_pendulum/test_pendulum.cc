@@ -37,14 +37,13 @@ namespace gazebo
         v_m=0-v_max;
       
       state_type X(N);
-      X = state;
       state(0) = (this->L1->RelativeAngularVel().X()*gear_ratio);
-      
+      X = state;
+
       state_type U(N);
-      U <<this->L1->RelativeTorque().X()/gear_ratio, v_m;
-
+      U <<(this->L1->RelativeTorque().X())/gear_ratio, v_m;
+      std::cout<<state(0)<<" "<<U(0)<<std::endl;
       state = this->G*X + this->H*U;
-
       double torque = (C.transpose() * state)(0); //Test correct size matrix
       return torque *= gear_ratio;
         
@@ -81,7 +80,7 @@ namespace gazebo
       this->theta=M_PI;      //initial theta (radians)
       this->theta_dot=0.0;  //initial theta dot (radians/s)
       this->iq=0;         //initial iq (amps)
-      this->voltage=0.009;  //initial voltage to motor Vm (volts)
+      this->voltage=.009;  //initial voltage to motor Vm (volts)
       this->torque=0;     //initial external torque (N*m)
       // double time=30;      //total time interval (seconds)
       // double dt=0.0001;       //size of one time step (No longer need!)
@@ -119,34 +118,34 @@ namespace gazebo
       std::cout<<"iq: "<<iq<<std::endl;
       // state2 << theta_dot,iq;
       
-      state << theta_dot, iq;
+      this->state << theta_dot, iq;
       std::cout <<"state: " << state << std::endl;
 
       // std::cout <<"state: " << state2 << std::endl;
 
       // this->A(2,2);
-      A << (-b/j), (k/j), (-k/l), (-r/l);
+      this->A << (-b/j), (k/j), (-k/l), (-r/l);
 
       std::cout <<"A: " << A << std::endl;
       
       
       // this->B(2,2);
-      B << (-1/j), 0, 0, (1/l);
+      this->B << (-1/j), 0, 0, (1/l);
       
       std::cout <<"B: " << B << std::endl;
 
       // this->C(2,1);
-      C << torque, v_m;
+      this->C << -b, k;
 
       std::cout <<"C: " << C << std::endl;
 
       // this->D(2,1);
-      D << 0, 0;
+      this->D << 0, 0;
 
       std::cout <<"D: " << D << std::endl;
 
       // this->I(2,2);
-      I << 1,0,0,1;
+      this->I << 1,0,0,1;
       std::cout <<"I: " << I << std::endl;
 
       // this->G(2,2);
@@ -215,8 +214,9 @@ namespace gazebo
       // torque = C * state
       // torque *= 10;
       // this->L1->AddTorque(ignition::math::Vector3d (torque,0,0));
-
-      this->L1->AddTorque(ignition::math::Vector3d (UpdateMotor(),0,0));
+      double t_added=UpdateMotor();
+      std::cout<<"Torque Output: "<<t_added<<std::endl;
+      this->L1->AddTorque(ignition::math::Vector3d (t_added,0,0));
 
       // Apply a small linear velocity to the model.
       //this->model->SetLinearVel(ignition::math::Vector3d(.3, .3, 0));
