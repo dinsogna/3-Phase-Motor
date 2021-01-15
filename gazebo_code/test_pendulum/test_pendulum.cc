@@ -44,8 +44,8 @@ namespace gazebo
       U <<(this->L1->RelativeTorque().X())/gear_ratio, v_m;
       std::cout<<state(0)<<" "<<U(0)<<std::endl;
       state = this->G*X + this->H*U;
-      double torque = (C.transpose() * state)(0); //Test correct size matrix
-      return torque *= gear_ratio;
+      double torque = (C.transpose() * state+ D.transpose()*U)(0)*gear_ratio; //Test correct size matrix
+      return torque;
         
     }
 
@@ -80,7 +80,7 @@ namespace gazebo
       this->theta=M_PI;      //initial theta (radians)
       this->theta_dot=0.0;  //initial theta dot (radians/s)
       this->iq=0;         //initial iq (amps)
-      this->voltage=.009;  //initial voltage to motor Vm (volts)
+      this->voltage=.009;//.009;  //initial voltage to motor Vm (volts)
       this->torque=0;     //initial external torque (N*m)
       // double time=30;      //total time interval (seconds)
       // double dt=0.0001;       //size of one time step (No longer need!)
@@ -140,7 +140,7 @@ namespace gazebo
       std::cout <<"C: " << C << std::endl;
 
       // this->D(2,1);
-      this->D << 0, 0;
+      this->D << -1, 0;
 
       std::cout <<"D: " << D << std::endl;
 
