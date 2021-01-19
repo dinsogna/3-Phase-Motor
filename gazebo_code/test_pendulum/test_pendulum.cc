@@ -38,13 +38,17 @@ namespace gazebo
       
       state_type X(N);
       state(0) = (this->L1->RelativeAngularVel().X()*gear_ratio);
+      std::cout<<"State Start: "<<state<<std::endl;
       X = state;
 
       state_type U(N);
       U <<(this->L1->RelativeTorque().X())/gear_ratio, v_m;
-      std::cout<<state(0)<<" "<<U(0)<<std::endl;
-      state = this->G*X + this->H*U;
+      //state = (this->A*X + this->B*U)*T+state;
+      state = (this->G*X + this->H*U);
       double torque = (C.transpose() * state+ D.transpose()*U)(0)*gear_ratio; //Test correct size matrix
+      std::cout<<"Torque Output: "<<torque<<std::endl;
+      std::cout<<"State End: "<<state<<std::endl;
+  
       return torque;
         
     }
@@ -57,7 +61,7 @@ namespace gazebo
       // std::cout<<(G - I)*(B*(A.inverse()))<<std::endl;
       // H = (G-I_2x2)*B(A^-1)
      
-      this->H = (G - I)*(B*(A.inverse()));
+      this->H = A.inverse()*(G - I)*(B);
       std::cout<<"H: "<<H<<std::endl;
       //G and H are now global vars
 
@@ -80,12 +84,12 @@ namespace gazebo
       this->theta=M_PI;      //initial theta (radians)
       this->theta_dot=0.0;  //initial theta dot (radians/s)
       this->iq=0;         //initial iq (amps)
-      this->voltage=.009;//.009;  //initial voltage to motor Vm (volts)
-      this->torque=0;     //initial external torque (N*m)
+      this->voltage=.17836363636;//.009;  //initial voltage to motor Vm (volts)
+      //this->torque=0;     //initial external torque (N*m)
       // double time=30;      //total time interval (seconds)
       // double dt=0.0001;       //size of one time step (No longer need!)
 
-      std::cout <<"Initial Conditions: "<<theta <<";"<<iq<<";"<<voltage<<";"<<torque<<std::endl;
+      std::cout <<"Initial Conditions: "<<theta <<";"<<iq<<";"<<voltage<<";"<<std::endl;
       ///////////////////////////
 
       //========================
@@ -189,15 +193,13 @@ namespace gazebo
       // Calculate the dt at each step
       double dt = (_info.simTime - this->lastUpdate).Double();
       this->lastUpdate = _info.simTime;
-      
+      std::cout<<dt<<std::endl;
       //first step or when T!=dt
       if (T != dt) {
         
         std::cout<<"if statement"<<std::endl;
         this->T = dt;
         convertToDiscrete();
-        // std::cout<"G: " <<G<<std::endl;
-        // std::cout<"H: " <<H<<std::endl;
       }
 
       
@@ -215,9 +217,10 @@ namespace gazebo
       // torque *= 10;
       // this->L1->AddTorque(ignition::math::Vector3d (torque,0,0));
       double t_added=UpdateMotor();
-      std::cout<<"Torque Output: "<<t_added<<std::endl;
+      //std::cout<<"Angle (Joint): "<<R1->Position(0)*180/M_PI<<std::endl;
+      //std::cout<<"Angle (Link): "<<L1->RelativePose()<<std::endl;
       this->L1->AddTorque(ignition::math::Vector3d (t_added,0,0));
-
+      std::cout<<"AnglularVel: "<<(this->L1->RelativeAngularVel().X()*gear_ratio)<<std::endl;
       // Apply a small linear velocity to the model.
       //this->model->SetLinearVel(ignition::math::Vector3d(.3, .3, 0));
       // count=count +.001;
@@ -252,7 +255,7 @@ namespace gazebo
 
         //SYSTEM CONSTANTS
         common::Time lastUpdate;
-        double T=-1; //discrete time step
+        double T; //discrete time step
 
         //INITIAL CONDITIONS (originally main())
         double theta;      //initial theta (radians)
@@ -261,7 +264,7 @@ namespace gazebo
         // Eigen::VectorXd state;  //initial motor state (theta dot, iq)
         Eigen::Vector2d state;
         double voltage;  //initial voltage to motor Vm (volts)
-        double torque; 
+        //double torque; 
 
         //MOTOR CONSTANTS
         double v_max;
