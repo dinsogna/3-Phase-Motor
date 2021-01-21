@@ -41,6 +41,22 @@ namespace gazebo
       std::cout<<"State Start: "<<state<<std::endl;
       X = state;
 
+      double temp_pos=(R1->Position(0))-M_PI;
+      switch(cont_select){
+        case 1: //DIRECT POSITION CONTROL
+          v_m=v_max*direct_control(temp_pos, state(1), this->target);
+          break;
+        case 2: //CURRENT CONTROL
+          v_m=v_max*current_control(state(1), this->target);
+          break;
+        case 3: //VELOCITY CONTROL
+          v_m=v_max*velocity_control(state(0), state(1), this->target);
+          break;
+        default:
+          break;
+      }
+      
+
       state_type U(N);
       U <<(this->L1->RelativeTorque().X())/gear_ratio, v_m;
       //state = (this->A*X + this->B*U)*T+state;
@@ -52,6 +68,59 @@ namespace gazebo
       return torque;
         
     }
+
+    private: double pos_block(double position, double target){
+      double Kp=30;
+      double Ki=2;
+      double Kd=0.13;
+      double newError=target-position;
+      double proportional=Kp*newError;
+      this->pos_integral+=Ki*newError*T;
+      double derivative=Kd*(newError-this->pos_error)/T;
+      this->pos_error=newError;
+      return proportional+this->pos_integral+derivative;
+    }
+
+    private: double foc_block(double current, double target){
+      double Kp=0.007;
+      double Ki=0.002;
+      double Kd=0;
+      double newError=target-current;
+      double proportional=Kp*newError;
+      this->foc_integral+=Ki*newError*T;
+      double derivative=Kd*(newError-this->foc_error)/T;
+      this->foc_error=newError;
+      return proportional+this->foc_integral+derivative;
+    }
+
+    private: double vel_block(double velocity, double target){
+      double Kp=50;
+      double Ki=0.5;
+      double Kd=0;
+      double newError=target-velocity;
+      double proportional=Kp*newError;
+      this->vel_integral+=Ki*newError*T;
+      double derivative=Kd*(newError-this->vel_error)/T;
+      this->vel_error=newError;
+      return proportional+this->vel_integral+derivative;
+    }
+
+
+    private: double direct_control(double position, double current, double target_position){
+      double tar_cur=pos_block(position, target_position);
+      return foc_block(current, tar_cur);
+    }
+
+    private: double velocity_control(double velocity, double current, double target_velocity){
+      double tar_cur=vel_block(velocity, target_velocity);
+      return foc_block(current, tar_cur);
+    }
+
+    private: double current_control(double current, double target_current){
+      return foc_block(current, target_current);
+    }
+
+
 
     private: void convertToDiscrete() {
       // G = e^AT (Matrix exponential)
@@ -78,13 +147,26 @@ namespace gazebo
       std::cout << "Load() 1" << std::endl;
       
 
+
+      //========================
+      //INITIAL CONTROLLER CONDITIONS
+      //========================
+      this->cont_select=1;
+      this->target=M_PI/2;
+      this->pos_error=0;
+      this->pos_integral=0;
+      this->foc_error=0;
+      this->foc_integral=0;
+      this->vel_error=0;
+      this->vel_integral=0;
+
       //========================
       //INITIAL CONDITIONS
       //========================
       this->theta=M_PI;      //initial theta (radians)
       this->theta_dot=0.0;  //initial theta dot (radians/s)
       this->iq=0;         //initial iq (amps)
-      this->voltage=.17836363636;//.009;  //initial voltage to motor Vm (volts)
+      this->voltage=0;//.009;  //initial voltage to motor Vm (volts)
       //this->torque=0;     //initial external torque (N*m)
       // double time=30;      //total time interval (seconds)
       // double dt=0.0001;       //size of one time step (No longer need!)
@@ -276,6 +358,17 @@ namespace gazebo
         double v_m;
         double iq;
         double gear_ratio; 
+
+        //CONTROLLER CONSTANTS
+        int cont_select;
+        double target;
+        double pos_error;
+        double pos_integral;
+        double foc_error;
+        double foc_integral; 
+        double vel_error;
+        double vel_integral;
+
 
         //Continuous time state space/ initialize in Load()
         // Eigen::Matrix2d A;
